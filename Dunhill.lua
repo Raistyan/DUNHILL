@@ -380,13 +380,15 @@ function Dunhill:CreateWindow(config)
         local function ActivateTab()
             for _, tab in pairs(Window.Tabs) do
                 tab.Content.Visible = false
+                -- PERBAIKAN: Gunakan Theme.ElementBg untuk tab tidak aktif
                 Tween(tab.Button, {BackgroundColor3 = Theme.ElementBg})
                 Tween(tab.Button.Icon, {TextColor3 = Theme.TextDim})
                 Tween(tab.Button.Label, {TextColor3 = Theme.TextDim})
             end
             Window.CurrentTab = TabContent
             TabContent.Visible = true
-            Tween(TabBtn, {BackgroundColor3 = Theme.SidebarSelected})
+            -- PERBAIKAN: Gunakan warna yang kontras untuk tab aktif
+            Tween(TabBtn, {BackgroundColor3 = Theme.Primary})
             Tween(Icon, {TextColor3 = Theme.TextDark})
             Tween(Label, {TextColor3 = Theme.TextDark})
         end

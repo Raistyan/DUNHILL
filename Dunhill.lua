@@ -36,6 +36,9 @@ local Theme = {
     ElementBgHover = Color3.fromRGB(30, 30, 30),
     ElementBorder = Color3.fromRGB(45, 45, 45),
     
+    TabActive = Color3.fromRGB(60, 60, 60),  -- Warna untuk tab aktif
+    TabInactive = Color3.fromRGB(25, 25, 25), -- Warna untuk tab tidak aktif
+
     Text = Color3.fromRGB(245, 245, 245),
     TextDim = Color3.fromRGB(160, 160, 160),
     TextDark = Color3.fromRGB(20, 20, 20),
@@ -380,17 +383,15 @@ function Dunhill:CreateWindow(config)
         local function ActivateTab()
             for _, tab in pairs(Window.Tabs) do
                 tab.Content.Visible = false
-                -- PERBAIKAN: Gunakan Theme.ElementBg untuk tab tidak aktif
-                Tween(tab.Button, {BackgroundColor3 = Theme.ElementBg})
+                Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
                 Tween(tab.Button.Icon, {TextColor3 = Theme.TextDim})
                 Tween(tab.Button.Label, {TextColor3 = Theme.TextDim})
             end
             Window.CurrentTab = TabContent
             TabContent.Visible = true
-            -- PERBAIKAN: Gunakan warna yang kontras untuk tab aktif
-            Tween(TabBtn, {BackgroundColor3 = Theme.Primary})
-            Tween(Icon, {TextColor3 = Theme.TextDark})
-            Tween(Label, {TextColor3 = Theme.TextDark})
+            Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
+            Tween(Icon, {TextColor3 = Theme.Text})
+            Tween(Label, {TextColor3 = Theme.Text})
         end
         
         TabBtn.MouseButton1Click:Connect(ActivateTab)

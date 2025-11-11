@@ -2,11 +2,12 @@
     ╔══════════════════════════════════════╗
     ║      DUNHILL UI LIBRARY v2.0         ║
     ║   Modern UI for Roblox Executors     ║
+    ║          FIXED VERSION               ║
     ╚══════════════════════════════════════╝
 ]]
 
 local Dunhill = {}
-Dunhill.Version = "2.0.0"
+Dunhill.Version = "2.0.1"
 Dunhill.Flags = {}
 
 local TweenService = game:GetService("TweenService")
@@ -36,8 +37,8 @@ local Theme = {
     ElementBgHover = Color3.fromRGB(30, 30, 30),
     ElementBorder = Color3.fromRGB(45, 45, 45),
     
-    TabActive = Color3.fromRGB(60, 60, 60),  -- Warna untuk tab aktif
-    TabInactive = Color3.fromRGB(25, 25, 25), -- Warna untuk tab tidak aktif
+    TabActive = Color3.fromRGB(60, 60, 60),
+    TabInactive = Color3.fromRGB(25, 25, 25),
 
     Text = Color3.fromRGB(245, 245, 245),
     TextDim = Color3.fromRGB(160, 160, 160),
@@ -329,6 +330,7 @@ function Dunhill:CreateWindow(config)
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 7)
         
         local Icon = Instance.new("TextLabel", TabBtn)
+        Icon.Name = "Icon"
         Icon.Size = UDim2.new(0, 28, 1, 0)
         Icon.Position = UDim2.new(0, 8, 0, 0)
         Icon.BackgroundTransparency = 1
@@ -338,6 +340,7 @@ function Dunhill:CreateWindow(config)
         Icon.Font = Enum.Font.Gotham
         
         local Label = Instance.new("TextLabel", TabBtn)
+        Label.Name = "Label"
         Label.Size = UDim2.new(1, -42, 1, 0)
         Label.Position = UDim2.new(0, 36, 0, 0)
         Label.BackgroundTransparency = 1
@@ -351,6 +354,7 @@ function Dunhill:CreateWindow(config)
         TabContent.Name = TabName .. "Content"
         TabContent.Size = UDim2.new(1, -175, 1, -15)
         TabContent.Position = UDim2.new(0, 165, 0, 10)
+        TabContent.BackgroundColor3 = Theme.Background
         TabContent.BackgroundTransparency = 1
         TabContent.BorderSizePixel = 0
         TabContent.ScrollBarThickness = 3
@@ -358,9 +362,11 @@ function Dunhill:CreateWindow(config)
         TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
         TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
         TabContent.Visible = false
+        TabContent.ClipsDescendants = true
         
         local Layout = Instance.new("UIListLayout", TabContent)
         Layout.Padding = UDim.new(0, 10)
+        Layout.SortOrder = Enum.SortOrder.LayoutOrder
         
         local Padding = Instance.new("UIPadding", TabContent)
         Padding.PaddingTop = UDim.new(0, 5)
@@ -381,26 +387,40 @@ function Dunhill:CreateWindow(config)
         end)
         
         local function ActivateTab()
+            -- Sembunyikan semua tab dan reset warna
             for _, tab in pairs(Window.Tabs) do
                 tab.Content.Visible = false
                 Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
-                Tween(tab.Button.Icon, {TextColor3 = Theme.TextDim})
-                Tween(tab.Button.Label, {TextColor3 = Theme.TextDim})
+                Tween(tab.Icon, {TextColor3 = Theme.TextDim})
+                Tween(tab.Label, {TextColor3 = Theme.TextDim})
             end
+            
+            -- Aktifkan tab yang dipilih
             Window.CurrentTab = TabContent
             TabContent.Visible = true
             Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
             Tween(Icon, {TextColor3 = Theme.Text})
             Tween(Label, {TextColor3 = Theme.Text})
+            
+            -- Force refresh canvas size
+            TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
+            task.wait()
+            TabContent.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
         end
         
         TabBtn.MouseButton1Click:Connect(ActivateTab)
         
+        -- Aktifkan tab pertama secara default
         if #Window.Tabs == 0 then
-            ActivateTab()
+            task.defer(ActivateTab)
         end
         
-        local Tab = {Button = TabBtn, Content = TabContent}
+        local Tab = {
+            Button = TabBtn, 
+            Content = TabContent,
+            Icon = Icon,
+            Label = Label
+        }
         table.insert(Window.Tabs, Tab)
         
         function Tab:CreateSection(config)

@@ -2,12 +2,12 @@
     ╔══════════════════════════════════════╗
     ║      DUNHILL UI LIBRARY v2.0         ║
     ║   Modern UI for Roblox Executors     ║
-    ║          FIXED VERSION               ║
+    ║       MOBILE SUPPORT FIXED           ║
     ╚══════════════════════════════════════╝
 ]]
 
 local Dunhill = {}
-Dunhill.Version = "2.0.3"
+Dunhill.Version = "2.0.4"
 Dunhill.Flags = {}
 
 local TweenService = game:GetService("TweenService")
@@ -57,6 +57,17 @@ local Theme = {
     SliderThumb = Color3.fromRGB(255, 255, 255),
 }
 
+-- Helper function untuk deteksi input (mouse atau touch)
+local function IsValidInput(inputType)
+    return inputType == Enum.UserInputType.MouseButton1 or 
+           inputType == Enum.UserInputType.Touch
+end
+
+local function IsValidMoveInput(inputType)
+    return inputType == Enum.UserInputType.MouseMovement or 
+           inputType == Enum.UserInputType.Touch
+end
+
 local function Tween(obj, props, duration, style, direction)
     duration = duration or 0.25
     style = style or Enum.EasingStyle.Quad
@@ -68,7 +79,7 @@ local function MakeDraggable(frame, dragHandle)
     local dragging, dragInput, dragStart, startPos
     
     dragHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if IsValidInput(input.UserInputType) then
             dragging = true
             dragStart = input.Position
             startPos = frame.Position
@@ -82,7 +93,7 @@ local function MakeDraggable(frame, dragHandle)
     end)
     
     dragHandle.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
+        if IsValidMoveInput(input.UserInputType) then
             dragInput = input
         end
     end)
@@ -664,7 +675,6 @@ function Dunhill:CreateWindow(config)
                 SliderFill.BorderSizePixel = 0
                 Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(1, 0)
                 
-                -- BULATAN SLIDER (THUMB)
                 local SliderThumb = Instance.new("Frame", SliderBg)
                 SliderThumb.Size = UDim2.new(0, 16, 0, 16)
                 SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)
@@ -673,22 +683,19 @@ function Dunhill:CreateWindow(config)
                 SliderThumb.ZIndex = 2
                 Instance.new("UICorner", SliderThumb).CornerRadius = UDim.new(1, 0)
                 
-                -- Shadow untuk thumb
                 local ThumbShadow = Instance.new("UIStroke", SliderThumb)
                 ThumbShadow.Color = Color3.fromRGB(0, 0, 0)
                 ThumbShadow.Thickness = 2
                 ThumbShadow.Transparency = 0.5
                 
                 local SliderBtn = Instance.new("TextButton", SliderBg)
-                SliderBtn.Size = UDim2.new(1, 0, 1, 10)
-                SliderBtn.Position = UDim2.new(0, 0, 0, -5)
+                SliderBtn.Size = UDim2.new(1, 0, 1, 20)
+                SliderBtn.Position = UDim2.new(0, 0, 0, -10)
                 SliderBtn.BackgroundTransparency = 1
                 SliderBtn.Text = ""
                 SliderBtn.ZIndex = 3
                 
                 local Dragging = false
-                local DragConnection = nil
-                local ReleaseConnection = nil
                 
                 local function SetValue(value)
                     value = math.clamp(value, Min, Max)
@@ -708,53 +715,60 @@ function Dunhill:CreateWindow(config)
                     SaveConfig()
                 end
                 
-                local function GetMousePosition()
-                    if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
-                        local touch = UserInputService:GetTouchPosition(1)
-                        if touch then
-                            return touch
-                        end
+                local function GetInputPosition(input)
+                    if input.UserInputType == Enum.UserInputType.Touch then
+                        return input.Position
+                    else
+                        return UserInputService:GetMouseLocation()
                     end
-                    return UserInputService:GetMouseLocation()
                 end
                 
-                local function Update()
-                    local mouse = GetMousePosition()
-                    local relativeX = mouse.X - SliderBg.AbsolutePosition.X
+                local function Update(input)
+                    local pos = GetInputPosition(input)
+                    local relativeX = pos.X - SliderBg.AbsolutePosition.X
                     local percent = math.clamp(relativeX / SliderBg.AbsoluteSize.X, 0, 1)
                     SetValue(Min + (Max - Min) * percent)
                 end
                 
-                -- Mouse/Touch Down
+                -- Input Began (Mouse Click atau Touch)
                 SliderBtn.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or 
-                       input.UserInputType == Enum.UserInputType.Touch then
+                    if IsValidInput(input.UserInputType) then
                         Dragging = true
                         Tween(SliderThumb, {Size = UDim2.new(0, 20, 0, 20)}, 0.1)
-                        Update()
+                        Update(input)
                     end
                 end)
                 
-                -- Mouse/Touch Move
-                DragConnection = UserInputService.InputChanged:Connect(function(input)
-                    if Dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or 
-                       input.UserInputType == Enum.UserInputType.Touch) then
-                        Update()
+                -- Input Changed (Dragging)
+                SliderBtn.InputChanged:Connect(function(input)
+                    if Dragging and IsValidMoveInput(input.UserInputType) then
+                        Update(input)
                     end
                 end)
                 
-                -- Mouse/Touch Up
-                ReleaseConnection = UserInputService.InputEnded:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or 
-                       input.UserInputType == Enum.UserInputType.Touch then
-                        if Dragging then
-                            Dragging = false
-                            Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.1)
-                        end
+                -- Input Ended (Release)
+                SliderBtn.InputEnded:Connect(function(input)
+                    if IsValidInput(input.UserInputType) and Dragging then
+                        Dragging = false
+                        Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.1)
                     end
                 end)
                 
-                -- Hover effect pada thumb
+                -- Global input tracking untuk drag yang keluar dari area
+                UserInputService.InputChanged:Connect(function(input)
+                    if Dragging and IsValidMoveInput(input.UserInputType) then
+                        Update(input)
+                    end
+                end)
+                
+                UserInputService.InputEnded:Connect(function(input)
+                    if IsValidInput(input.UserInputType) and Dragging then
+                        Dragging = false
+                        Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.1)
+                    end
+                end)
+                
+                -- Hover effect (only for mouse)
                 SliderBtn.MouseEnter:Connect(function()
                     if not Dragging then
                         Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15)

@@ -7,7 +7,7 @@
 ]]
 
 local Dunhill = {}
-Dunhill.Version = "2.0.2"
+Dunhill.Version = "2.0.3"
 Dunhill.Flags = {}
 
 local TweenService = game:GetService("TweenService")
@@ -54,6 +54,7 @@ local Theme = {
     
     SliderFill = Color3.fromRGB(190, 190, 190),
     SliderBg = Color3.fromRGB(35, 35, 35),
+    SliderThumb = Color3.fromRGB(255, 255, 255),
 }
 
 local function Tween(obj, props, duration, style, direction)
@@ -360,7 +361,7 @@ function Dunhill:CreateWindow(config)
         TabContent.ScrollBarThickness = 3
         TabContent.ScrollBarImageColor3 = Theme.Primary
         TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
-        TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        TabContent.AutomaticSize = Enum.AutomaticSize.Y
         TabContent.Visible = false
         TabContent.ClipsDescendants = true
         
@@ -419,7 +420,6 @@ function Dunhill:CreateWindow(config)
             config = config or {}
             local SectionName = config.Name or "Section"
             
-            -- FRAME UTAMA SECTION DENGAN BACKGROUND & BORDER
             local Section = Instance.new("Frame", TabContent)
             Section.Name = SectionName
             Section.Size = UDim2.new(1, 0, 0, 0)
@@ -428,20 +428,17 @@ function Dunhill:CreateWindow(config)
             Section.BorderSizePixel = 0
             Instance.new("UICorner", Section).CornerRadius = UDim.new(0, 8)
             
-            -- STROKE/BORDER SECTION
             local SectionStroke = Instance.new("UIStroke", Section)
             SectionStroke.Color = Theme.ElementBorder
             SectionStroke.Thickness = 1
             SectionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
             
-            -- PADDING UNTUK SECTION
             local SectionPadding = Instance.new("UIPadding", Section)
             SectionPadding.PaddingTop = UDim.new(0, 12)
             SectionPadding.PaddingBottom = UDim.new(0, 12)
             SectionPadding.PaddingLeft = UDim.new(0, 12)
             SectionPadding.PaddingRight = UDim.new(0, 12)
             
-            -- TITLE SECTION
             local SectionTitle = Instance.new("TextLabel", Section)
             SectionTitle.Name = "Title"
             SectionTitle.Size = UDim2.new(1, 0, 0, 22)
@@ -452,7 +449,6 @@ function Dunhill:CreateWindow(config)
             SectionTitle.Font = Enum.Font.GothamBold
             SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
             
-            -- CONTAINER UNTUK ELEMENTS
             local Container = Instance.new("Frame", Section)
             Container.Name = "Container"
             Container.Size = UDim2.new(1, 0, 0, 0)
@@ -625,7 +621,7 @@ function Dunhill:CreateWindow(config)
                 local CurrentValue = Default
                 
                 local Frame = Instance.new("Frame", Container)
-                Frame.Size = UDim2.new(1, 0, 0, 54)
+                Frame.Size = UDim2.new(1, 0, 0, 60)
                 Frame.BackgroundColor3 = Theme.ElementBg
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
@@ -656,8 +652,8 @@ function Dunhill:CreateWindow(config)
                 ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
                 
                 local SliderBg = Instance.new("Frame", Frame)
-                SliderBg.Size = UDim2.new(1, -30, 0, 6)
-                SliderBg.Position = UDim2.new(0, 15, 1, -18)
+                SliderBg.Size = UDim2.new(1, -30, 0, 8)
+                SliderBg.Position = UDim2.new(0, 15, 1, -22)
                 SliderBg.BackgroundColor3 = Theme.SliderBg
                 SliderBg.BorderSizePixel = 0
                 Instance.new("UICorner", SliderBg).CornerRadius = UDim.new(1, 0)
@@ -668,12 +664,31 @@ function Dunhill:CreateWindow(config)
                 SliderFill.BorderSizePixel = 0
                 Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(1, 0)
                 
+                -- BULATAN SLIDER (THUMB)
+                local SliderThumb = Instance.new("Frame", SliderBg)
+                SliderThumb.Size = UDim2.new(0, 16, 0, 16)
+                SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)
+                SliderThumb.BackgroundColor3 = Theme.SliderThumb
+                SliderThumb.BorderSizePixel = 0
+                SliderThumb.ZIndex = 2
+                Instance.new("UICorner", SliderThumb).CornerRadius = UDim.new(1, 0)
+                
+                -- Shadow untuk thumb
+                local ThumbShadow = Instance.new("UIStroke", SliderThumb)
+                ThumbShadow.Color = Color3.fromRGB(0, 0, 0)
+                ThumbShadow.Thickness = 2
+                ThumbShadow.Transparency = 0.5
+                
                 local SliderBtn = Instance.new("TextButton", SliderBg)
-                SliderBtn.Size = UDim2.new(1, 0, 1, 0)
+                SliderBtn.Size = UDim2.new(1, 0, 1, 10)
+                SliderBtn.Position = UDim2.new(0, 0, 0, -5)
                 SliderBtn.BackgroundTransparency = 1
                 SliderBtn.Text = ""
+                SliderBtn.ZIndex = 3
                 
                 local Dragging = false
+                local DragConnection = nil
+                local ReleaseConnection = nil
                 
                 local function SetValue(value)
                     value = math.clamp(value, Min, Max)
@@ -681,7 +696,11 @@ function Dunhill:CreateWindow(config)
                     value = math.clamp(value, Min, Max)
                     CurrentValue = value
                     ValueLabel.Text = tostring(value)
-                    Tween(SliderFill, {Size = UDim2.new((value - Min) / (Max - Min), 0, 1, 0)}, 0.15)
+                    
+                    local percent = (value - Min) / (Max - Min)
+                    Tween(SliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1)
+                    Tween(SliderThumb, {Position = UDim2.new(percent, -8, 0.5, -8)}, 0.1)
+                    
                     if Flag then
                         Dunhill.Flags[Flag] = {CurrentValue = value, SetValue = SetValue}
                     end
@@ -689,27 +708,63 @@ function Dunhill:CreateWindow(config)
                     SaveConfig()
                 end
                 
-                SliderBtn.MouseButton1Down:Connect(function()
-                    Dragging = true
-                    local function Update()
-                        local mouse = UserInputService:GetMouseLocation()
-                        local percent = math.clamp((mouse.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
-                        SetValue(Min + (Max - Min) * percent)
+                local function GetMousePosition()
+                    if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
+                        local touch = UserInputService:GetTouchPosition(1)
+                        if touch then
+                            return touch
+                        end
                     end
-                    Update()
-                    local move, release
-                    move = UserInputService.InputChanged:Connect(function(input)
-                        if input.UserInputType == Enum.UserInputType.MouseMovement and Dragging then
-                            Update()
-                        end
-                    end)
-                    release = UserInputService.InputEnded:Connect(function(input)
-                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    return UserInputService:GetMouseLocation()
+                end
+                
+                local function Update()
+                    local mouse = GetMousePosition()
+                    local relativeX = mouse.X - SliderBg.AbsolutePosition.X
+                    local percent = math.clamp(relativeX / SliderBg.AbsoluteSize.X, 0, 1)
+                    SetValue(Min + (Max - Min) * percent)
+                end
+                
+                -- Mouse/Touch Down
+                SliderBtn.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+                       input.UserInputType == Enum.UserInputType.Touch then
+                        Dragging = true
+                        Tween(SliderThumb, {Size = UDim2.new(0, 20, 0, 20)}, 0.1)
+                        Update()
+                    end
+                end)
+                
+                -- Mouse/Touch Move
+                DragConnection = UserInputService.InputChanged:Connect(function(input)
+                    if Dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or 
+                       input.UserInputType == Enum.UserInputType.Touch) then
+                        Update()
+                    end
+                end)
+                
+                -- Mouse/Touch Up
+                ReleaseConnection = UserInputService.InputEnded:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+                       input.UserInputType == Enum.UserInputType.Touch then
+                        if Dragging then
                             Dragging = false
-                            move:Disconnect()
-                            release:Disconnect()
+                            Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.1)
                         end
-                    end)
+                    end
+                end)
+                
+                -- Hover effect pada thumb
+                SliderBtn.MouseEnter:Connect(function()
+                    if not Dragging then
+                        Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15)
+                    end
+                end)
+                
+                SliderBtn.MouseLeave:Connect(function()
+                    if not Dragging then
+                        Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.15)
+                    end
                 end)
                 
                 if Flag then

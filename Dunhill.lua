@@ -7,7 +7,7 @@
 ]]
 
 local Dunhill = {}
-Dunhill.Version = "2.0.1"
+Dunhill.Version = "2.0.2"
 Dunhill.Flags = {}
 
 local TweenService = game:GetService("TweenService")
@@ -387,7 +387,6 @@ function Dunhill:CreateWindow(config)
         end)
         
         local function ActivateTab()
-            -- Sembunyikan semua tab dan reset warna
             for _, tab in pairs(Window.Tabs) do
                 tab.Content.Visible = false
                 Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
@@ -395,22 +394,15 @@ function Dunhill:CreateWindow(config)
                 Tween(tab.Label, {TextColor3 = Theme.TextDim})
             end
             
-            -- Aktifkan tab yang dipilih
             Window.CurrentTab = TabContent
             TabContent.Visible = true
             Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
             Tween(Icon, {TextColor3 = Theme.Text})
             Tween(Label, {TextColor3 = Theme.Text})
-            
-            -- Force refresh canvas size
-            TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
-            task.wait()
-            TabContent.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
         end
         
         TabBtn.MouseButton1Click:Connect(ActivateTab)
         
-        -- Aktifkan tab pertama secara default
         if #Window.Tabs == 0 then
             task.defer(ActivateTab)
         end
@@ -427,32 +419,52 @@ function Dunhill:CreateWindow(config)
             config = config or {}
             local SectionName = config.Name or "Section"
             
+            -- FRAME UTAMA SECTION DENGAN BACKGROUND & BORDER
             local Section = Instance.new("Frame", TabContent)
             Section.Name = SectionName
             Section.Size = UDim2.new(1, 0, 0, 0)
             Section.AutomaticSize = Enum.AutomaticSize.Y
-            Section.BackgroundTransparency = 1
+            Section.BackgroundColor3 = Theme.BackgroundSecondary
+            Section.BorderSizePixel = 0
+            Instance.new("UICorner", Section).CornerRadius = UDim.new(0, 8)
             
+            -- STROKE/BORDER SECTION
+            local SectionStroke = Instance.new("UIStroke", Section)
+            SectionStroke.Color = Theme.ElementBorder
+            SectionStroke.Thickness = 1
+            SectionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            
+            -- PADDING UNTUK SECTION
+            local SectionPadding = Instance.new("UIPadding", Section)
+            SectionPadding.PaddingTop = UDim.new(0, 12)
+            SectionPadding.PaddingBottom = UDim.new(0, 12)
+            SectionPadding.PaddingLeft = UDim.new(0, 12)
+            SectionPadding.PaddingRight = UDim.new(0, 12)
+            
+            -- TITLE SECTION
             local SectionTitle = Instance.new("TextLabel", Section)
-            SectionTitle.Size = UDim2.new(1, 0, 0, 28)
+            SectionTitle.Name = "Title"
+            SectionTitle.Size = UDim2.new(1, 0, 0, 22)
             SectionTitle.BackgroundTransparency = 1
             SectionTitle.Text = "▸ " .. SectionName
             SectionTitle.TextColor3 = Theme.Accent
-            SectionTitle.TextSize = 15
+            SectionTitle.TextSize = 14
             SectionTitle.Font = Enum.Font.GothamBold
             SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
             
+            -- CONTAINER UNTUK ELEMENTS
             local Container = Instance.new("Frame", Section)
             Container.Name = "Container"
             Container.Size = UDim2.new(1, 0, 0, 0)
-            Container.Position = UDim2.new(0, 0, 0, 32)
+            Container.Position = UDim2.new(0, 0, 0, 28)
             Container.AutomaticSize = Enum.AutomaticSize.Y
             Container.BackgroundTransparency = 1
             
             local ContainerLayout = Instance.new("UIListLayout", Container)
             ContainerLayout.Padding = UDim.new(0, 8)
+            ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
             
-            local SectionObj = {Container = Container}
+            local SectionObj = {Container = Container, Frame = Section}
             
             function SectionObj:CreateLabel(config)
                 config = config or {}

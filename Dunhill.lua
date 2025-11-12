@@ -364,16 +364,17 @@ function Dunhill:CreateWindow(config)
         local TabName = config.Name or "Tab"
         local TabIcon = config.Icon or "📄"
         
-        local TabBtn = Instance.new("TextButton", Sidebar)
+        local TabBtn = Instance.new("TextButton")
         TabBtn.Name = TabName
         TabBtn.Size = UDim2.new(1, -12, 0, IsMobile and 35 or 38)
         TabBtn.BackgroundColor3 = Theme.ElementBg
         TabBtn.Text = ""
         TabBtn.AutoButtonColor = false
         TabBtn.BorderSizePixel = 0
+        TabBtn.Parent = Sidebar
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 7)
         
-        local Icon = Instance.new("TextLabel", TabBtn)
+        local Icon = Instance.new("TextLabel")
         Icon.Name = "Icon"
         Icon.Size = UDim2.new(0, IsMobile and 24 or 28, 1, 0)
         Icon.Position = UDim2.new(0, IsMobile and 6 or 8, 0, 0)
@@ -382,8 +383,9 @@ function Dunhill:CreateWindow(config)
         Icon.TextColor3 = Theme.TextDim
         Icon.TextSize = IsMobile and 14 or 16
         Icon.Font = Enum.Font.Gotham
+        Icon.Parent = TabBtn
         
-        local Label = Instance.new("TextLabel", TabBtn)
+        local Label = Instance.new("TextLabel")
         Label.Name = "Label"
         Label.Size = UDim2.new(1, -(IsMobile and 34 or 42), 1, 0)
         Label.Position = UDim2.new(0, IsMobile and 30 or 36, 0, 0)
@@ -394,8 +396,9 @@ function Dunhill:CreateWindow(config)
         Label.Font = Enum.Font.GothamMedium
         Label.TextXAlignment = Enum.TextXAlignment.Left
         Label.TextTruncate = Enum.TextTruncate.AtEnd
+        Label.Parent = TabBtn
         
-        -- PENTING: Buat TabContent dengan parent yang benar
+        -- PENTING: Buat TabContent dengan benar
         local TabContent = Instance.new("ScrollingFrame")
         TabContent.Name = TabName .. "_Content"
         TabContent.Size = UDim2.new(1, -(sidebarWidth + 20), 1, -15)
@@ -409,17 +412,19 @@ function Dunhill:CreateWindow(config)
         TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
         TabContent.Visible = false
         TabContent.ClipsDescendants = true
-        TabContent.Parent = Content -- Set parent di sini
+        TabContent.Parent = Content -- Pastikan parent di-set
         
-        local Layout = Instance.new("UIListLayout", TabContent)
+        local Layout = Instance.new("UIListLayout")
         Layout.Padding = UDim.new(0, 10)
         Layout.SortOrder = Enum.SortOrder.LayoutOrder
+        Layout.Parent = TabContent
         
-        local Padding = Instance.new("UIPadding", TabContent)
+        local Padding = Instance.new("UIPadding")
         Padding.PaddingTop = UDim.new(0, 5)
         Padding.PaddingLeft = UDim.new(0, 5)
         Padding.PaddingRight = UDim.new(0, 5)
         Padding.PaddingBottom = UDim.new(0, 5)
+        Padding.Parent = TabContent
         
         TabBtn.MouseEnter:Connect(function()
             if Window.CurrentTab ~= TabContent then
@@ -435,12 +440,18 @@ function Dunhill:CreateWindow(config)
         
         local function ActivateTab()
             for _, tab in pairs(Window.Tabs) do
-                if tab.Content then
+                if tab.Content and tab.Content.Parent then
                     tab.Content.Visible = false
                 end
-                Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
-                Tween(tab.Icon, {TextColor3 = Theme.TextDim})
-                Tween(tab.Label, {TextColor3 = Theme.TextDim})
+                if tab.Button and tab.Button.Parent then
+                    Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
+                end
+                if tab.Icon and tab.Icon.Parent then
+                    Tween(tab.Icon, {TextColor3 = Theme.TextDim})
+                end
+                if tab.Label and tab.Label.Parent then
+                    Tween(tab.Label, {TextColor3 = Theme.TextDim})
+                end
             end
             
             Window.CurrentTab = TabContent
@@ -468,6 +479,12 @@ function Dunhill:CreateWindow(config)
         function Tab:CreateSection(config)
             config = config or {}
             local SectionName = config.Name or "Section"
+            
+            -- Pastikan TabContent ada sebelum membuat Section
+            if not TabContent or not TabContent.Parent then
+                warn("TabContent tidak valid untuk tab: " .. TabName)
+                return nil
+            end
             
             -- Parent langsung ke TabContent yang benar
             local Section = Instance.new("Frame")

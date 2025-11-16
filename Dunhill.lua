@@ -7,7 +7,7 @@
 ]]
 
 local Dunhill = {}
-Dunhill.Version = "2.0.3"
+Dunhill.Version = "2.0.2"
 Dunhill.Flags = {}
 
 local TweenService = game:GetService("TweenService")
@@ -54,7 +54,6 @@ local Theme = {
     
     SliderFill = Color3.fromRGB(190, 190, 190),
     SliderBg = Color3.fromRGB(35, 35, 35),
-    SliderThumb = Color3.fromRGB(255, 255, 255),
 }
 
 local function Tween(obj, props, duration, style, direction)
@@ -68,7 +67,7 @@ local function MakeDraggable(frame, dragHandle)
     local dragging, dragInput, dragStart, startPos
     
     dragHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
             startPos = frame.Position
@@ -82,7 +81,7 @@ local function MakeDraggable(frame, dragHandle)
     end)
     
     dragHandle.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
             dragInput = input
         end
     end)
@@ -328,7 +327,51 @@ function Dunhill:CreateWindow(config)
         TabBtn.Text = ""
         TabBtn.AutoButtonColor = false
         TabBtn.BorderSizePixel = 0
-        Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 7)
+        Instance.new("UICorner", Notif).CornerRadius = UDim.new(0, 10)
+        
+        local NotifStroke = Instance.new("UIStroke", Notif)
+        NotifStroke.Color = Color
+        NotifStroke.Thickness = 2
+        
+        local NotifTitle = Instance.new("TextLabel", Notif)
+        NotifTitle.Size = UDim2.new(1, -20, 0, 26)
+        NotifTitle.Position = UDim2.new(0, 12, 0, 10)
+        NotifTitle.BackgroundTransparency = 1
+        NotifTitle.Text = Title
+        NotifTitle.TextColor3 = Theme.Accent
+        NotifTitle.TextSize = 15
+        NotifTitle.Font = Enum.Font.GothamBold
+        NotifTitle.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local NotifContent = Instance.new("TextLabel", Notif)
+        NotifContent.Size = UDim2.new(1, -20, 1, -40)
+        NotifContent.Position = UDim2.new(0, 12, 0, 36)
+        NotifContent.BackgroundTransparency = 1
+        NotifContent.Text = Content
+        NotifContent.TextColor3 = Theme.TextDim
+        NotifContent.TextSize = 13
+        NotifContent.Font = Enum.Font.Gotham
+        NotifContent.TextXAlignment = Enum.TextXAlignment.Left
+        NotifContent.TextYAlignment = Enum.TextYAlignment.Top
+        NotifContent.TextWrapped = true
+        
+        Tween(Notif, {Position = UDim2.new(1, -340, 1, -105)}, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        
+        task.delay(Duration, function()
+            Tween(Notif, {Position = UDim2.new(1, -340, 1, 100)}, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+            task.wait(0.5)
+            Notif:Destroy()
+        end)
+    end
+    
+    if LoadConfigurationOnStart then
+        LoadConfig()
+    end
+    
+    return Window
+end
+
+return DunhillCorner", TabBtn).CornerRadius = UDim.new(0, 7)
         
         local Icon = Instance.new("TextLabel", TabBtn)
         Icon.Name = "Icon"
@@ -361,7 +404,7 @@ function Dunhill:CreateWindow(config)
         TabContent.ScrollBarThickness = 3
         TabContent.ScrollBarImageColor3 = Theme.Primary
         TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
-        TabContent.AutomaticSize = Enum.AutomaticSize.Y
+        TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
         TabContent.Visible = false
         TabContent.ClipsDescendants = true
         
@@ -621,7 +664,7 @@ function Dunhill:CreateWindow(config)
                 local CurrentValue = Default
                 
                 local Frame = Instance.new("Frame", Container)
-                Frame.Size = UDim2.new(1, 0, 0, 60)
+                Frame.Size = UDim2.new(1, 0, 0, 54)
                 Frame.BackgroundColor3 = Theme.ElementBg
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
@@ -653,7 +696,7 @@ function Dunhill:CreateWindow(config)
                 
                 local SliderBg = Instance.new("Frame", Frame)
                 SliderBg.Size = UDim2.new(1, -30, 0, 6)
-                SliderBg.Position = UDim2.new(0, 15, 1, -22)
+                SliderBg.Position = UDim2.new(0, 15, 1, -18)
                 SliderBg.BackgroundColor3 = Theme.SliderBg
                 SliderBg.BorderSizePixel = 0
                 Instance.new("UICorner", SliderBg).CornerRadius = UDim.new(1, 0)
@@ -664,31 +707,27 @@ function Dunhill:CreateWindow(config)
                 SliderFill.BorderSizePixel = 0
                 Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(1, 0)
                 
-                -- BULATAN KECIL (THUMB) YANG BISA DI DRAG
                 local SliderThumb = Instance.new("Frame", SliderBg)
                 SliderThumb.Size = UDim2.new(0, 16, 0, 16)
                 SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)
-                SliderThumb.BackgroundColor3 = Theme.SliderThumb
+                SliderThumb.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 SliderThumb.BorderSizePixel = 0
                 SliderThumb.ZIndex = 2
                 Instance.new("UICorner", SliderThumb).CornerRadius = UDim.new(1, 0)
                 
-                -- Shadow untuk thumb
                 local ThumbShadow = Instance.new("UIStroke", SliderThumb)
-                ThumbShadow.Color = Color3.fromRGB(0, 0, 0)
+                ThumbShadow.Color = Theme.SliderFill
                 ThumbShadow.Thickness = 2
-                ThumbShadow.Transparency = 0.7
+                ThumbShadow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local SliderBtn = Instance.new("TextButton", SliderBg)
-                SliderBtn.Size = UDim2.new(1, 20, 1, 20)
-                SliderBtn.Position = UDim2.new(0, -10, 0, -10)
+                SliderBtn.Size = UDim2.new(1, 0, 3, 0)
+                SliderBtn.Position = UDim2.new(0, 0, -1, 0)
                 SliderBtn.BackgroundTransparency = 1
                 SliderBtn.Text = ""
                 SliderBtn.ZIndex = 3
                 
                 local Dragging = false
-                local DragConnection
-                local ReleaseConnection
                 
                 local function SetValue(value)
                     value = math.clamp(value, Min, Max)
@@ -698,8 +737,8 @@ function Dunhill:CreateWindow(config)
                     ValueLabel.Text = tostring(value)
                     
                     local percent = (value - Min) / (Max - Min)
-                    Tween(SliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1, Enum.EasingStyle.Linear)
-                    Tween(SliderThumb, {Position = UDim2.new(percent, -8, 0.5, -8)}, 0.1, Enum.EasingStyle.Linear)
+                    Tween(SliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1)
+                    Tween(SliderThumb, {Position = UDim2.new(percent, -8, 0.5, -8)}, 0.1)
                     
                     if Flag then
                         Dunhill.Flags[Flag] = {CurrentValue = value, SetValue = SetValue}
@@ -708,58 +747,74 @@ function Dunhill:CreateWindow(config)
                     SaveConfig()
                 end
                 
-                local function Update(input)
-                    local pos
-                    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        pos = UserInputService:GetMouseLocation()
-                    elseif input.UserInputType == Enum.UserInputType.Touch then
-                        pos = input.Position
-                    else
-                        return
-                    end
-                    
-                    local percent = math.clamp((pos.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+                local function UpdateValue(input)
+                    local mousePos = input.Position.X
+                    local sliderPos = SliderBg.AbsolutePosition.X
+                    local sliderSize = SliderBg.AbsoluteSize.X
+                    local percent = math.clamp((mousePos - sliderPos) / sliderSize, 0, 1)
                     SetValue(Min + (Max - Min) * percent)
                 end
                 
-                -- Handle Mouse dan Touch untuk mulai drag
-                SliderBtn.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        Dragging = true
-                        Tween(SliderThumb, {Size = UDim2.new(0, 20, 0, 20)}, 0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                        Update(input)
-                        
-                        -- Connection untuk mouse/touch move
-                        DragConnection = UserInputService.InputChanged:Connect(function(changedInput)
-                            if Dragging then
-                                if changedInput.UserInputType == Enum.UserInputType.MouseMovement or changedInput.UserInputType == Enum.UserInputType.Touch then
-                                    Update(changedInput)
-                                end
-                            end
-                        end)
-                        
-                        -- Connection untuk release
-                        ReleaseConnection = UserInputService.InputEnded:Connect(function(endInput)
-                            if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
-                                Dragging = false
-                                Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                                if DragConnection then DragConnection:Disconnect() end
-                                if ReleaseConnection then ReleaseConnection:Disconnect() end
-                            end
-                        end)
+                SliderBtn.MouseButton1Down:Connect(function()
+                    Dragging = true
+                    SliderThumb.Size = UDim2.new(0, 20, 0, 20)
+                    SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -10, 0.5, -10)
+                end)
+                
+                SliderBtn.MouseButton1Up:Connect(function()
+                    Dragging = false
+                    SliderThumb.Size = UDim2.new(0, 16, 0, 16)
+                    SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)
+                end)
+                
+                SliderBtn.MouseMoved:Connect(function(x, y)
+                    if Dragging then
+                        local percent = math.clamp((x - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+                        SetValue(Min + (Max - Min) * percent)
                     end
                 end)
                 
-                -- Hover effect pada thumb
+                UserInputService.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.Touch then
+                        local touchPos = input.Position
+                        if touchPos.X >= SliderBg.AbsolutePosition.X and touchPos.X <= SliderBg.AbsolutePosition.X + SliderBg.AbsoluteSize.X then
+                            if touchPos.Y >= SliderBg.AbsolutePosition.Y - 20 and touchPos.Y <= SliderBg.AbsolutePosition.Y + SliderBg.AbsoluteSize.Y + 20 then
+                                Dragging = true
+                                SliderThumb.Size = UDim2.new(0, 20, 0, 20)
+                                local percent = math.clamp((touchPos.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+                                SetValue(Min + (Max - Min) * percent)
+                            end
+                        end
+                    end
+                end)
+                
+                UserInputService.InputChanged:Connect(function(input)
+                    if Dragging and input.UserInputType == Enum.UserInputType.Touch then
+                        local touchPos = input.Position
+                        local percent = math.clamp((touchPos.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+                        SetValue(Min + (Max - Min) * percent)
+                    end
+                end)
+                
+                UserInputService.InputEnded:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.Touch then
+                        Dragging = false
+                        SliderThumb.Size = UDim2.new(0, 16, 0, 16)
+                        SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)
+                    end
+                end)
+                
                 SliderBtn.MouseEnter:Connect(function()
                     if not Dragging then
-                        Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15)
+                        SliderThumb.Size = UDim2.new(0, 18, 0, 18)
+                        SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -9, 0.5, -9)
                     end
                 end)
                 
                 SliderBtn.MouseLeave:Connect(function()
                     if not Dragging then
-                        Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.15)
+                        SliderThumb.Size = UDim2.new(0, 16, 0, 16)
+                        SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)
                     end
                 end)
                 
@@ -1172,39 +1227,4 @@ function Dunhill:CreateWindow(config)
         Notif.Position = UDim2.new(1, -340, 1, 100)
         Notif.BackgroundColor3 = Theme.BackgroundSecondary
         Notif.BorderSizePixel = 0
-        Instance.new("UICorner", Notif).CornerRadius = UDim.new(0, 10)
-        
-        local NotifStroke = Instance.new("UIStroke", Notif)
-        NotifStroke.Color = Color
-        NotifStroke.Thickness = 2
-        
-        local NotifTitle = Instance.new("TextLabel", Notif)
-        NotifTitle.Size = UDim2.new(1, -20, 0, 26)
-        NotifTitle.Position = UDim2.new(0, 12, 0, 10)
-        NotifTitle.BackgroundTransparency = 1
-        NotifTitle.Text = Title
-        NotifTitle.TextColor3 = Theme.Accent
-        NotifTitle.TextSize = 15
-        NotifTitle.Font = Enum.Font.GothamBold
-        NotifTitle.TextXAlignment = Enum.TextXAlignment.Left
-        
-        local NotifContent = Instance.new("TextLabel", Notif)
-        NotifContent.Size = UDim2.new(1, -20, 1, -40)
-        NotifContent.Position = UDim2.new(0, 12, 0, 36)
-        NotifContent.BackgroundTransparency = 1
-        NotifContent.Text = Content
-        NotifContent.TextColor3 = Theme.TextDim
-        NotifContent.TextSize = 13
-        NotifContent.Font = Enum.Font.Gotham
-        NotifContent.TextXAlignment = Enum.TextXAlignment.Left
-        NotifContent.TextYAlignment = Enum.TextYAlignment.Top
-        NotifContent.TextWrapped = true
-        
-        Tween(Notif, {Position = UDim2.new(1, -340, 1, -105)}, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-        
-        task.delay(Duration, function()
-            Tween(Notif, {Position = UDim2.new(1, -340, 1, 100)}, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-            task.wait(0.5)
-            Notif:Destroy()
-        end)
-    end
+        Instance.new("UI

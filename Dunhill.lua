@@ -419,7 +419,6 @@ function Dunhill:CreateWindow(config)
             config = config or {}
             local SectionName = config.Name or "Section"
             
-            -- FRAME UTAMA SECTION DENGAN BACKGROUND & BORDER
             local Section = Instance.new("Frame", TabContent)
             Section.Name = SectionName
             Section.Size = UDim2.new(1, 0, 0, 0)
@@ -428,20 +427,17 @@ function Dunhill:CreateWindow(config)
             Section.BorderSizePixel = 0
             Instance.new("UICorner", Section).CornerRadius = UDim.new(0, 8)
             
-            -- STROKE/BORDER SECTION
             local SectionStroke = Instance.new("UIStroke", Section)
             SectionStroke.Color = Theme.ElementBorder
             SectionStroke.Thickness = 1
             SectionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
             
-            -- PADDING UNTUK SECTION
             local SectionPadding = Instance.new("UIPadding", Section)
             SectionPadding.PaddingTop = UDim.new(0, 12)
             SectionPadding.PaddingBottom = UDim.new(0, 12)
             SectionPadding.PaddingLeft = UDim.new(0, 12)
             SectionPadding.PaddingRight = UDim.new(0, 12)
             
-            -- TITLE SECTION
             local SectionTitle = Instance.new("TextLabel", Section)
             SectionTitle.Name = "Title"
             SectionTitle.Size = UDim2.new(1, 0, 0, 22)
@@ -452,7 +448,6 @@ function Dunhill:CreateWindow(config)
             SectionTitle.Font = Enum.Font.GothamBold
             SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
             
-            -- CONTAINER UNTUK ELEMENTS
             local Container = Instance.new("Frame", Section)
             Container.Name = "Container"
             Container.Size = UDim2.new(1, 0, 0, 0)
@@ -668,10 +663,27 @@ function Dunhill:CreateWindow(config)
                 SliderFill.BorderSizePixel = 0
                 Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(1, 0)
                 
+                -- BULATAN SLIDER (THUMB)
+                local SliderThumb = Instance.new("Frame", SliderBg)
+                SliderThumb.Size = UDim2.new(0, 16, 0, 16)
+                SliderThumb.Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)
+                SliderThumb.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                SliderThumb.BorderSizePixel = 0
+                SliderThumb.ZIndex = 2
+                Instance.new("UICorner", SliderThumb).CornerRadius = UDim.new(1, 0)
+                
+                -- Shadow untuk bulatan
+                local ThumbShadow = Instance.new("UIStroke", SliderThumb)
+                ThumbShadow.Color = Theme.SliderFill
+                ThumbShadow.Thickness = 2
+                ThumbShadow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                
                 local SliderBtn = Instance.new("TextButton", SliderBg)
-                SliderBtn.Size = UDim2.new(1, 0, 1, 0)
+                SliderBtn.Size = UDim2.new(1, 0, 3, 0)
+                SliderBtn.Position = UDim2.new(0, 0, -1, 0)
                 SliderBtn.BackgroundTransparency = 1
                 SliderBtn.Text = ""
+                SliderBtn.ZIndex = 3
                 
                 local Dragging = false
                 
@@ -681,7 +693,11 @@ function Dunhill:CreateWindow(config)
                     value = math.clamp(value, Min, Max)
                     CurrentValue = value
                     ValueLabel.Text = tostring(value)
-                    Tween(SliderFill, {Size = UDim2.new((value - Min) / (Max - Min), 0, 1, 0)}, 0.15)
+                    
+                    local percent = (value - Min) / (Max - Min)
+                    Tween(SliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1)
+                    Tween(SliderThumb, {Position = UDim2.new(percent, -8, 0.5, -8)}, 0.1)
+                    
                     if Flag then
                         Dunhill.Flags[Flag] = {CurrentValue = value, SetValue = SetValue}
                     end
@@ -689,27 +705,100 @@ function Dunhill:CreateWindow(config)
                     SaveConfig()
                 end
                 
+                local function UpdateSlider(input)
+                    local pos = input.Position
+                    local percent = math.clamp((pos.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+                    SetValue(Min + (Max - Min) * percent)
+                end
+                
+                -- SUPPORT PC (Mouse)
                 SliderBtn.MouseButton1Down:Connect(function()
                     Dragging = true
-                    local function Update()
-                        local mouse = UserInputService:GetMouseLocation()
-                        local percent = math.clamp((mouse.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
-                        SetValue(Min + (Max - Min) * percent)
-                    end
-                    Update()
-                    local move, release
-                    move = UserInputService.InputChanged:Connect(function(input)
+                    Tween(SliderThumb, {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -10, 0.5, -10)}, 0.15)
+                    
+                    local moveConn, releaseConn
+                    
+                    moveConn = UserInputService.InputChanged:Connect(function(input)
                         if input.UserInputType == Enum.UserInputType.MouseMovement and Dragging then
-                            Update()
+                            UpdateSlider(input)
                         end
                     end)
-                    release = UserInputService.InputEnded:Connect(function(input)
+                    
+                    releaseConn = UserInputService.InputEnded:Connect(function(input)
                         if input.UserInputType == Enum.UserInputType.MouseButton1 then
                             Dragging = false
-                            move:Disconnect()
-                            release:Disconnect()
+                            Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)}, 0.15)
+                            moveConn:Disconnect()
+                            releaseConn:Disconnect()
                         end
                     end)
+                end)
+                
+                -- SUPPORT MOBILE (Touch)
+                SliderBtn.TouchTap:Connect(function(touchPositions)
+                    if #touchPositions > 0 then
+                        local touchPos = touchPositions[1]
+                        local percent = math.clamp((touchPos.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+                        SetValue(Min + (Max - Min) * percent)
+                    end
+                end)
+                
+                SliderBtn.TouchLongPress:Connect(function(touchPositions)
+                    if #touchPositions > 0 then
+                        Dragging = true
+                        Tween(SliderThumb, {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -10, 0.5, -10)}, 0.15)
+                        
+                        local moveConn, releaseConn
+                        
+                        moveConn = UserInputService.TouchMoved:Connect(function(touch, gameProcessed)
+                            if Dragging and not gameProcessed then
+                                local percent = math.clamp((touch.Position.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+                                SetValue(Min + (Max - Min) * percent)
+                            end
+                        end)
+                        
+                        releaseConn = UserInputService.TouchEnded:Connect(function(touch, gameProcessed)
+                            Dragging = false
+                            Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)}, 0.15)
+                            moveConn:Disconnect()
+                            releaseConn:Disconnect()
+                        end)
+                    end
+                end)
+                
+                -- Input alternatif untuk mobile yang lebih responsif
+                SliderBtn.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.Touch then
+                        Dragging = true
+                        Tween(SliderThumb, {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -10, 0.5, -10)}, 0.15)
+                        UpdateSlider(input)
+                    end
+                end)
+                
+                SliderBtn.InputChanged:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.Touch and Dragging then
+                        UpdateSlider(input)
+                    end
+                end)
+                
+                SliderBtn.InputEnded:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.Touch then
+                        Dragging = false
+                        Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)}, 0.15)
+                    end
+                end)
+                
+                -- Hover effect untuk PC
+                SliderBtn.MouseEnter:Connect(function()
+                    if not Dragging then
+                        Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -9, 0.5, -9)}, 0.15)
+                    end
+                end)
+                
+                SliderBtn.MouseLeave:Connect(function()
+                    if not Dragging then
+                        Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new((CurrentValue - Min) / (Max - Min), -8, 0.5, -8)}, 0.15)
+                    end
                 end)
                 
                 if Flag then
@@ -722,447 +811,3 @@ function Dunhill:CreateWindow(config)
                     SetValue = SetValue
                 }
             end
-            
-            function SectionObj:CreateInput(config)
-                config = config or {}
-                local Name = config.Name or "Input"
-                local PlaceholderText = config.PlaceholderText or "Enter text..."
-                local RemoveTextAfterFocusLost = config.RemoveTextAfterFocusLost or false
-                local Flag = config.Flag
-                local Callback = config.Callback or function() end
-                
-                local Frame = Instance.new("Frame", Container)
-                Frame.Size = UDim2.new(1, 0, 0, 65)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BorderSizePixel = 0
-                Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
-                
-                local Stroke = Instance.new("UIStroke", Frame)
-                Stroke.Color = Theme.ElementBorder
-                Stroke.Thickness = 1
-                Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                
-                local NameLabel = Instance.new("TextLabel", Frame)
-                NameLabel.Size = UDim2.new(1, -30, 0, 22)
-                NameLabel.Position = UDim2.new(0, 15, 0, 8)
-                NameLabel.BackgroundTransparency = 1
-                NameLabel.Text = Name
-                NameLabel.TextColor3 = Theme.Text
-                NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
-                NameLabel.TextXAlignment = Enum.TextXAlignment.Left
-                
-                local InputBox = Instance.new("TextBox", Frame)
-                InputBox.Size = UDim2.new(1, -30, 0, 28)
-                InputBox.Position = UDim2.new(0, 15, 0, 32)
-                InputBox.BackgroundColor3 = Theme.SliderBg
-                InputBox.Text = ""
-                InputBox.PlaceholderText = PlaceholderText
-                InputBox.PlaceholderColor3 = Theme.TextDim
-                InputBox.TextColor3 = Theme.Text
-                InputBox.TextSize = 13
-                InputBox.Font = Enum.Font.Gotham
-                InputBox.ClearTextOnFocus = false
-                InputBox.BorderSizePixel = 0
-                Instance.new("UICorner", InputBox).CornerRadius = UDim.new(0, 5)
-                
-                local InputPadding = Instance.new("UIPadding", InputBox)
-                InputPadding.PaddingLeft = UDim.new(0, 10)
-                InputPadding.PaddingRight = UDim.new(0, 10)
-                
-                InputBox.Focused:Connect(function()
-                    Tween(Stroke, {Color = Theme.Primary})
-                end)
-                
-                InputBox.FocusLost:Connect(function()
-                    Tween(Stroke, {Color = Theme.ElementBorder})
-                    local text = InputBox.Text
-                    if Flag then
-                        Dunhill.Flags[Flag] = {CurrentValue = text}
-                    end
-                    pcall(Callback, text)
-                    if RemoveTextAfterFocusLost then
-                        InputBox.Text = ""
-                    end
-                    SaveConfig()
-                end)
-                
-                if Flag then
-                    Dunhill.Flags[Flag] = {CurrentValue = ""}
-                end
-                
-                return {
-                    SetValue = function(_, text)
-                        InputBox.Text = text
-                        if Flag then
-                            Dunhill.Flags[Flag] = {CurrentValue = text}
-                        end
-                    end
-                }
-            end
-            
-            function SectionObj:CreateDropdown(config)
-                config = config or {}
-                local Name = config.Name or "Dropdown"
-                local Options = config.Options or {"Option 1", "Option 2"}
-                local CurrentOption = config.CurrentOption or Options[1]
-                local Flag = config.Flag
-                local Callback = config.Callback or function() end
-                
-                local Frame = Instance.new("Frame", Container)
-                Frame.Size = UDim2.new(1, 0, 0, 38)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BorderSizePixel = 0
-                Frame.ClipsDescendants = true
-                Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
-                
-                local Stroke = Instance.new("UIStroke", Frame)
-                Stroke.Color = Theme.ElementBorder
-                Stroke.Thickness = 1
-                Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                
-                local Btn = Instance.new("TextButton", Frame)
-                Btn.Size = UDim2.new(1, 0, 0, 38)
-                Btn.BackgroundTransparency = 1
-                Btn.Text = ""
-                
-                local NameLabel = Instance.new("TextLabel", Frame)
-                NameLabel.Size = UDim2.new(1, -35, 1, 0)
-                NameLabel.Position = UDim2.new(0, 15, 0, 0)
-                NameLabel.BackgroundTransparency = 1
-                NameLabel.Text = CurrentOption
-                NameLabel.TextColor3 = Theme.Text
-                NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
-                NameLabel.TextXAlignment = Enum.TextXAlignment.Left
-                
-                local Arrow = Instance.new("TextLabel", Frame)
-                Arrow.Size = UDim2.new(0, 20, 0, 20)
-                Arrow.Position = UDim2.new(1, -30, 0, 9)
-                Arrow.BackgroundTransparency = 1
-                Arrow.Text = "▼"
-                Arrow.TextColor3 = Theme.TextDim
-                Arrow.TextSize = 10
-                Arrow.Font = Enum.Font.Gotham
-                
-                local OptionsFrame = Instance.new("Frame", Frame)
-                OptionsFrame.Size = UDim2.new(1, 0, 0, 0)
-                OptionsFrame.Position = UDim2.new(0, 0, 0, 38)
-                OptionsFrame.BackgroundTransparency = 1
-                
-                local OptionsLayout = Instance.new("UIListLayout", OptionsFrame)
-                OptionsLayout.Padding = UDim.new(0, 3)
-                
-                local Opened = false
-                
-                local function UpdateSize()
-                    if Opened then
-                        Tween(Frame, {Size = UDim2.new(1, 0, 0, 38 + (#Options * 28) + ((#Options - 1) * 3))})
-                        Tween(Arrow, {Rotation = 180})
-                    else
-                        Tween(Frame, {Size = UDim2.new(1, 0, 0, 38)})
-                        Tween(Arrow, {Rotation = 0})
-                    end
-                end
-                
-                for _, option in ipairs(Options) do
-                    local OptBtn = Instance.new("TextButton", OptionsFrame)
-                    OptBtn.Size = UDim2.new(1, -10, 0, 25)
-                    OptBtn.BackgroundColor3 = Theme.SliderBg
-                    OptBtn.Text = option
-                    OptBtn.TextColor3 = Theme.Text
-                    OptBtn.TextSize = 12
-                    OptBtn.Font = Enum.Font.Gotham
-                    OptBtn.AutoButtonColor = false
-                    OptBtn.BorderSizePixel = 0
-                    Instance.new("UICorner", OptBtn).CornerRadius = UDim.new(0, 5)
-                    
-                    OptBtn.MouseEnter:Connect(function()
-                        Tween(OptBtn, {BackgroundColor3 = Theme.ElementBgHover})
-                    end)
-                    
-                    OptBtn.MouseLeave:Connect(function()
-                        Tween(OptBtn, {BackgroundColor3 = Theme.SliderBg})
-                    end)
-                    
-                    OptBtn.MouseButton1Click:Connect(function()
-                        CurrentOption = option
-                        NameLabel.Text = option
-                        Opened = false
-                        UpdateSize()
-                        if Flag then
-                            Dunhill.Flags[Flag] = {CurrentValue = option}
-                        end
-                        pcall(Callback, option)
-                        SaveConfig()
-                    end)
-                end
-                
-                Btn.MouseButton1Click:Connect(function()
-                    Opened = not Opened
-                    UpdateSize()
-                end)
-                
-                if Flag then
-                    Dunhill.Flags[Flag] = {CurrentValue = CurrentOption}
-                end
-                
-                return {
-                    SetValue = function(_, option)
-                        if table.find(Options, option) then
-                            CurrentOption = option
-                            NameLabel.Text = option
-                            if Flag then
-                                Dunhill.Flags[Flag] = {CurrentValue = option}
-                            end
-                        end
-                    end,
-                    Refresh = function(_, newOptions)
-                        Options = newOptions
-                        for _, child in ipairs(OptionsFrame:GetChildren()) do
-                            if child:IsA("TextButton") then
-                                child:Destroy()
-                            end
-                        end
-                        for _, option in ipairs(Options) do
-                            local OptBtn = Instance.new("TextButton", OptionsFrame)
-                            OptBtn.Size = UDim2.new(1, -10, 0, 25)
-                            OptBtn.BackgroundColor3 = Theme.SliderBg
-                            OptBtn.Text = option
-                            OptBtn.TextColor3 = Theme.Text
-                            OptBtn.TextSize = 12
-                            OptBtn.Font = Enum.Font.Gotham
-                            OptBtn.AutoButtonColor = false
-                            OptBtn.BorderSizePixel = 0
-                            Instance.new("UICorner", OptBtn).CornerRadius = UDim.new(0, 5)
-                            OptBtn.MouseEnter:Connect(function() Tween(OptBtn, {BackgroundColor3 = Theme.ElementBgHover}) end)
-                            OptBtn.MouseLeave:Connect(function() Tween(OptBtn, {BackgroundColor3 = Theme.SliderBg}) end)
-                            OptBtn.MouseButton1Click:Connect(function()
-                                CurrentOption = option
-                                NameLabel.Text = option
-                                Opened = false
-                                UpdateSize()
-                                if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
-                                pcall(Callback, option)
-                                SaveConfig()
-                            end)
-                        end
-                    end
-                }
-            end
-            
-            function SectionObj:CreateKeybind(config)
-                config = config or {}
-                local Name = config.Name or "Keybind"
-                local CurrentKeybind = config.CurrentKeybind or "NONE"
-                local Flag = config.Flag
-                local Callback = config.Callback or function() end
-                
-                local Frame = Instance.new("Frame", Container)
-                Frame.Size = UDim2.new(1, 0, 0, 38)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BorderSizePixel = 0
-                Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
-                
-                local Stroke = Instance.new("UIStroke", Frame)
-                Stroke.Color = Theme.ElementBorder
-                Stroke.Thickness = 1
-                Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                
-                local NameLabel = Instance.new("TextLabel", Frame)
-                NameLabel.Size = UDim2.new(1, -75, 1, 0)
-                NameLabel.Position = UDim2.new(0, 15, 0, 0)
-                NameLabel.BackgroundTransparency = 1
-                NameLabel.Text = Name
-                NameLabel.TextColor3 = Theme.Text
-                NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
-                NameLabel.TextXAlignment = Enum.TextXAlignment.Left
-                
-                local KeyBtn = Instance.new("TextButton", Frame)
-                KeyBtn.Size = UDim2.new(0, 60, 0, 26)
-                KeyBtn.Position = UDim2.new(1, -68, 0.5, -13)
-                KeyBtn.BackgroundColor3 = Theme.SliderBg
-                KeyBtn.Text = CurrentKeybind
-                KeyBtn.TextColor3 = Theme.Primary
-                KeyBtn.TextSize = 12
-                KeyBtn.Font = Enum.Font.GothamBold
-                KeyBtn.AutoButtonColor = false
-                KeyBtn.BorderSizePixel = 0
-                Instance.new("UICorner", KeyBtn).CornerRadius = UDim.new(0, 5)
-                
-                local Binding = false
-                
-                KeyBtn.MouseButton1Click:Connect(function()
-                    Binding = true
-                    KeyBtn.Text = "..."
-                    local conn
-                    conn = UserInputService.InputBegan:Connect(function(input)
-                        if Binding then
-                            local key = input.KeyCode.Name
-                            if key ~= "Unknown" then
-                                CurrentKeybind = key
-                                KeyBtn.Text = key
-                                Binding = false
-                                if Flag then
-                                    Dunhill.Flags[Flag] = {CurrentValue = key}
-                                end
-                                SaveConfig()
-                                conn:Disconnect()
-                            end
-                        end
-                    end)
-                end)
-                
-                UserInputService.InputBegan:Connect(function(input, gpe)
-                    if not gpe and input.KeyCode.Name == CurrentKeybind then
-                        pcall(Callback)
-                    end
-                end)
-                
-                if Flag then
-                    Dunhill.Flags[Flag] = {CurrentValue = CurrentKeybind}
-                end
-                
-                return {
-                    SetValue = function(_, key)
-                        CurrentKeybind = key
-                        KeyBtn.Text = key
-                        if Flag then
-                            Dunhill.Flags[Flag] = {CurrentValue = key}
-                        end
-                    end
-                }
-            end
-            
-            function SectionObj:CreateColorPicker(config)
-                config = config or {}
-                local Name = config.Name or "Color Picker"
-                local Color = config.Color or Color3.fromRGB(255, 255, 255)
-                local Flag = config.Flag
-                local Callback = config.Callback or function() end
-                
-                local Frame = Instance.new("Frame", Container)
-                Frame.Size = UDim2.new(1, 0, 0, 38)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BorderSizePixel = 0
-                Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
-                
-                local Stroke = Instance.new("UIStroke", Frame)
-                Stroke.Color = Theme.ElementBorder
-                Stroke.Thickness = 1
-                Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                
-                local NameLabel = Instance.new("TextLabel", Frame)
-                NameLabel.Size = UDim2.new(1, -55, 1, 0)
-                NameLabel.Position = UDim2.new(0, 15, 0, 0)
-                NameLabel.BackgroundTransparency = 1
-                NameLabel.Text = Name
-                NameLabel.TextColor3 = Theme.Text
-                NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
-                NameLabel.TextXAlignment = Enum.TextXAlignment.Left
-                
-                local ColorDisplay = Instance.new("TextButton", Frame)
-                ColorDisplay.Size = UDim2.new(0, 35, 0, 22)
-                ColorDisplay.Position = UDim2.new(1, -43, 0.5, -11)
-                ColorDisplay.BackgroundColor3 = Color
-                ColorDisplay.Text = ""
-                ColorDisplay.AutoButtonColor = false
-                ColorDisplay.BorderSizePixel = 0
-                Instance.new("UICorner", ColorDisplay).CornerRadius = UDim.new(0, 5)
-                
-                local ColorStroke = Instance.new("UIStroke", ColorDisplay)
-                ColorStroke.Color = Theme.Primary
-                ColorStroke.Thickness = 1
-                
-                ColorDisplay.MouseButton1Click:Connect(function()
-                    pcall(Callback, Color)
-                end)
-                
-                if Flag then
-                    Dunhill.Flags[Flag] = {CurrentValue = Color}
-                end
-                
-                return {
-                    SetValue = function(_, color)
-                        Color = color
-                        ColorDisplay.BackgroundColor3 = color
-                        if Flag then
-                            Dunhill.Flags[Flag] = {CurrentValue = color}
-                        end
-                        pcall(Callback, color)
-                        SaveConfig()
-                    end
-                }
-            end
-            
-            return SectionObj
-        end
-        
-        return Tab
-    end
-    
-    function Window:CreateNotification(config)
-        config = config or {}
-        local Title = config.Title or "Notification"
-        local Content = config.Content or "Content"
-        local Duration = config.Duration or 3
-        local Type = config.Type or "Info"
-        
-        local Color = Theme.Info
-        if Type == "Success" then Color = Theme.Success
-        elseif Type == "Warning" then Color = Theme.Warning
-        elseif Type == "Error" then Color = Theme.Error
-        end
-        
-        local Notif = Instance.new("Frame", ScreenGui)
-        Notif.Size = UDim2.new(0, 320, 0, 85)
-        Notif.Position = UDim2.new(1, -340, 1, 100)
-        Notif.BackgroundColor3 = Theme.BackgroundSecondary
-        Notif.BorderSizePixel = 0
-        Instance.new("UICorner", Notif).CornerRadius = UDim.new(0, 10)
-        
-        local NotifStroke = Instance.new("UIStroke", Notif)
-        NotifStroke.Color = Color
-        NotifStroke.Thickness = 2
-        
-        local NotifTitle = Instance.new("TextLabel", Notif)
-        NotifTitle.Size = UDim2.new(1, -20, 0, 26)
-        NotifTitle.Position = UDim2.new(0, 12, 0, 10)
-        NotifTitle.BackgroundTransparency = 1
-        NotifTitle.Text = Title
-        NotifTitle.TextColor3 = Theme.Accent
-        NotifTitle.TextSize = 15
-        NotifTitle.Font = Enum.Font.GothamBold
-        NotifTitle.TextXAlignment = Enum.TextXAlignment.Left
-        
-        local NotifContent = Instance.new("TextLabel", Notif)
-        NotifContent.Size = UDim2.new(1, -20, 1, -40)
-        NotifContent.Position = UDim2.new(0, 12, 0, 36)
-        NotifContent.BackgroundTransparency = 1
-        NotifContent.Text = Content
-        NotifContent.TextColor3 = Theme.TextDim
-        NotifContent.TextSize = 13
-        NotifContent.Font = Enum.Font.Gotham
-        NotifContent.TextXAlignment = Enum.TextXAlignment.Left
-        NotifContent.TextYAlignment = Enum.TextYAlignment.Top
-        NotifContent.TextWrapped = true
-        
-        Tween(Notif, {Position = UDim2.new(1, -340, 1, -105)}, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-        
-        task.delay(Duration, function()
-            Tween(Notif, {Position = UDim2.new(1, -340, 1, 100)}, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-            task.wait(0.5)
-            Notif:Destroy()
-        end)
-    end
-    
-    if LoadConfigurationOnStart then
-        LoadConfig()
-    end
-    
-    return Window
-end
-
-return Dunhill

@@ -16,7 +16,20 @@ local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer or Players:WaitForChild("LocalPlayer", 10)
+
+-- ✅ FIX: Tunggu LocalPlayer dengan cara yang lebih reliable
+local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then
+    LocalPlayer = Players:WaitForChild("LocalPlayer", 3)
+end
+
+-- Jika masih nil, tunggu dengan repeat
+if not LocalPlayer then
+    repeat
+        LocalPlayer = Players.LocalPlayer
+        task.wait(0.1)
+    until LocalPlayer
+end
 
 local DunhillFolder = "DunhillUI"
 local ConfigurationExtension = ".dhl"
@@ -124,18 +137,32 @@ function Dunhill:CreateWindow(config)
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
     
+-- ✅ FIX: Parent detection yang lebih aman
 local success, parent = pcall(function()
     if gethui then
         return gethui()
+    elseif syn and syn.protect_gui then
+        local gui = Instance.new("ScreenGui")
+        syn.protect_gui(gui)
+        return gui.Parent or CoreGui
     else
         return CoreGui
     end
 end)
 
-if success then
+if success and parent then
     ScreenGui.Parent = parent
 else
-    ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+    if LocalPlayer then
+        local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+        if playerGui then
+            ScreenGui.Parent = playerGui
+        else
+            ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui", 5) or CoreGui
+        end
+    else
+        ScreenGui.Parent = CoreGui
+    end
 end
     
     local Main = Instance.new("Frame")
@@ -314,11 +341,11 @@ end
     local function LoadConfig()
         if not ConfigurationSaving.Enabled then return end
         
-        -- Tambahkan pcall untuk safety
+        -- ✅ FIX: Tambahkan pcall dan validasi lebih ketat
         local success = pcall(function()
             local path = DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension
             
-            if not isfile then return end
+            if not isfile or not readfile then return end
             if not isfile(path) then return end
             
             local content = readfile(path)
@@ -327,9 +354,11 @@ end
             local decoded = HttpService:JSONDecode(content)
             if type(decoded) ~= "table" then return end
             
+            -- Load dengan delay untuk setiap flag
             for flag, value in pairs(decoded) do
                 if Dunhill.Flags[flag] and Dunhill.Flags[flag].SetValue then
                     task.spawn(function()
+                        task.wait(0.05) -- Kasih jeda kecil
                         pcall(function()
                             Dunhill.Flags[flag]:SetValue(value)
                         end)
@@ -339,7 +368,7 @@ end
         end)
         
         if not success then
-            warn("Failed to load config")
+            warn("[Dunhill] Failed to load config")
         end
     end
     
@@ -434,10 +463,11 @@ end
         
         TabBtn.MouseButton1Click:Connect(ActivateTab)
         
+        -- ✅ FIX: Aktifkan tab pertama dengan delay lebih panjang
         if #Window.Tabs == 0 then
             task.spawn(function()
-                task.wait(0.15)
-                ActivateTab()
+                task.wait(0.5) -- Tambah delay
+                pcall(ActivateTab)
             end)
         end
         
@@ -1218,7 +1248,7 @@ end
 
 if LoadConfigurationOnStart then
     task.spawn(function()
-        task.wait(0.5)
+        task.wait(1) -- Kasih waktu semua UI fully loaded
         LoadConfig()
     end)
 end

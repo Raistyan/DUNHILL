@@ -123,14 +123,19 @@ function Dunhill:CreateWindow(config)
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
     
+local success, parent = pcall(function()
     if gethui then
-        ScreenGui.Parent = gethui()
-    elseif syn and syn.protect_gui then
-        syn.protect_gui(ScreenGui)
-        ScreenGui.Parent = CoreGui
+        return gethui()
     else
-        ScreenGui.Parent = CoreGui
+        return CoreGui
     end
+end)
+
+if success then
+    ScreenGui.Parent = parent
+else
+    ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+end
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"

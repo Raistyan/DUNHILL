@@ -312,17 +312,33 @@ end
     
     local function LoadConfig()
         if not ConfigurationSaving.Enabled then return end
-        local path = DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension
-        if isfile and isfile(path) then
-            local success, decoded = pcall(function() return HttpService:JSONDecode(readfile(path)) end)
+        
+        pcall(function()
+            if not isfile or not readfile then return end
+            
+            local path = DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension
+            
+            if not isfile(path) then return end
+            
+            local content = readfile(path)
+            if not content or content == "" then return end
+            
+            local success, decoded = pcall(function() 
+                return HttpService:JSONDecode(content) 
+            end)
+            
             if success and type(decoded) == "table" then
                 for flag, value in pairs(decoded) do
+                    task.wait(0.05)
                     if Dunhill.Flags[flag] and Dunhill.Flags[flag].SetValue then
-                        Dunhill.Flags[flag]:SetValue(value)
+                        pcall(function()
+                            Dunhill.Flags[flag]:SetValue(value)
+                        end)
                     end
                 end
+                print("[Dunhill] Config loaded successfully")
             end
-        end
+        end)
     end
     
     Window.SaveConfiguration = SaveConfig
@@ -417,7 +433,10 @@ end
         TabBtn.MouseButton1Click:Connect(ActivateTab)
         
         if #Window.Tabs == 0 then
-            task.defer(ActivateTab)
+            task.spawn(function()
+                task.wait(0.15)
+                ActivateTab()
+            end)
         end
         
         local Tab = {
@@ -1193,9 +1212,14 @@ end
         end)
     end
     
-    if LoadConfigurationOnStart then
+    task.wait(0.1)
+
+if LoadConfigurationOnStart then
+    task.spawn(function()
+        task.wait(0.5)
         LoadConfig()
-    end
+    end)
+end
     
     return Window
 end

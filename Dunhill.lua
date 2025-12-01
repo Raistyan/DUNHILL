@@ -16,6 +16,7 @@ local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer or Players:WaitForChild("LocalPlayer", 10)
 
 local DunhillFolder = "DunhillUI"
 local ConfigurationExtension = ".dhl"
@@ -313,32 +314,33 @@ end
     local function LoadConfig()
         if not ConfigurationSaving.Enabled then return end
         
-        pcall(function()
-            if not isfile or not readfile then return end
-            
+        -- Tambahkan pcall untuk safety
+        local success = pcall(function()
             local path = DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension
             
+            if not isfile then return end
             if not isfile(path) then return end
             
             local content = readfile(path)
             if not content or content == "" then return end
             
-            local success, decoded = pcall(function() 
-                return HttpService:JSONDecode(content) 
-            end)
+            local decoded = HttpService:JSONDecode(content)
+            if type(decoded) ~= "table" then return end
             
-            if success and type(decoded) == "table" then
-                for flag, value in pairs(decoded) do
-                    task.wait(0.05)
-                    if Dunhill.Flags[flag] and Dunhill.Flags[flag].SetValue then
+            for flag, value in pairs(decoded) do
+                if Dunhill.Flags[flag] and Dunhill.Flags[flag].SetValue then
+                    task.spawn(function()
                         pcall(function()
                             Dunhill.Flags[flag]:SetValue(value)
                         end)
-                    end
+                    end)
                 end
-                print("[Dunhill] Config loaded successfully")
             end
         end)
+        
+        if not success then
+            warn("Failed to load config")
+        end
     end
     
     Window.SaveConfiguration = SaveConfig

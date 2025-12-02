@@ -242,8 +242,8 @@ end
     MinimizedIcon.Size = UDim2.new(0, 65, 0, 65)
     MinimizedIcon.Position = UDim2.new(0, 20, 0, 20)
     MinimizedIcon.BackgroundColor3 = Theme.TopBar
-    MinimizedIcon.Image = "rbxassetid://87570594044433"
-    MinimizedIcon.ScaleType = Enum.ScaleType.Fit
+    MinimizedIcon.Text = "🎮"
+    MinimizedIcon.TextSize = 32
     MinimizedIcon.Font = Enum.Font.GothamBold
     MinimizedIcon.AutoButtonColor = false
     MinimizedIcon.BorderSizePixel = 0

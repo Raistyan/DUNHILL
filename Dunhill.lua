@@ -242,7 +242,7 @@ end
     MinimizedIcon.Size = UDim2.new(0, 65, 0, 65)
     MinimizedIcon.Position = UDim2.new(0, 20, 0, 20)
     MinimizedIcon.BackgroundColor3 = Theme.TopBar
-    MinimizedIcon.Image = "rbxassetid://87570594044433"  -- Ganti dengan ID kamu
+    MinimizedIcon.Image = "rbxasset://87570594044433"  -- Ganti dengan ID kamu
     MinimizedIcon.ScaleType = Enum.ScaleType.Fit
     -- HAPUS baris ImageColor3 atau set ke putih
     MinimizedIcon.ImageTransparency = 0  -- Gambar full visible

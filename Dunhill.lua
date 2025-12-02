@@ -237,20 +237,20 @@ end
     MinBtn.BorderSizePixel = 0
     Instance.new("UICorner", MinBtn).CornerRadius = UDim.new(0, 8)
         
-    local MinimizedIcon = Instance.new("ImageButton", ScreenGui)  -- ImageButton, bukan TextButton
+    local MinimizedIcon = Instance.new("ImageButton", ScreenGui)
     MinimizedIcon.Name = "MinIcon"
     MinimizedIcon.Size = UDim2.new(0, 65, 0, 65)
     MinimizedIcon.Position = UDim2.new(0, 20, 0, 20)
     MinimizedIcon.BackgroundColor3 = Theme.TopBar
-    MinimizedIcon.Image = "rbxassetid://87570594044433"  -- Ganti dengan Asset ID kamu
+    MinimizedIcon.Image = "rbxassetid://87570594044433"  -- Ganti dengan ID kamu
     MinimizedIcon.ScaleType = Enum.ScaleType.Fit
-    MinimizedIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)  -- Warna gambar (putih default)
+    -- HAPUS baris ImageColor3 atau set ke putih
+    MinimizedIcon.ImageTransparency = 0  -- Gambar full visible
     MinimizedIcon.AutoButtonColor = false
     MinimizedIcon.BorderSizePixel = 0
     MinimizedIcon.Visible = false
     Instance.new("UICorner", MinimizedIcon).CornerRadius = UDim.new(1, 0)
 
-    -- Shadow untuk icon
     local MinIconShadow = Instance.new("ImageLabel", MinimizedIcon)
     MinIconShadow.Size = UDim2.new(1, 30, 1, 30)
     MinIconShadow.Position = UDim2.new(0, -15, 0, -15)
@@ -261,6 +261,12 @@ end
     MinIconShadow.ScaleType = Enum.ScaleType.Slice
     MinIconShadow.SliceCenter = Rect.new(23, 23, 277, 277)
     MinIconShadow.ZIndex = -1
+
+    local IconPadding = Instance.new("UIPadding", MinimizedIcon)
+    IconPadding.PaddingTop = UDim.new(0, 10)
+    IconPadding.PaddingBottom = UDim.new(0, 10)
+    IconPadding.PaddingLeft = UDim.new(0, 10)
+    IconPadding.PaddingRight = UDim.new(0, 10)
 
     
     local Content = Instance.new("Frame", Main)

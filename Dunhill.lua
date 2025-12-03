@@ -332,53 +332,104 @@ end
     
     local function SaveConfig()
         if not ConfigurationSaving.Enabled then return end
-        local cfg = {}
-        for flag, data in pairs(Dunhill.Flags) do
-            cfg[flag] = data.CurrentValue
-        end
-        local success, encoded = pcall(function() return HttpService:JSONEncode(cfg) end)
-        if success and writefile then
-            if makefolder and not isfolder(DunhillFolder) then makefolder(DunhillFolder) end
-            if makefolder and not isfolder(DunhillFolder .. "/" .. ConfigurationSaving.FolderName) then
-                makefolder(DunhillFolder .. "/" .. ConfigurationSaving.FolderName)
-            end
-            writefile(DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension, encoded)
-        end
-    end
-    
-    local function LoadConfig()
-        if not ConfigurationSaving.Enabled then return end
         
-        -- ✅ FIX: Tambahkan pcall dan validasi lebih ketat
-        local success = pcall(function()
-            local path = DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension
+        -- ✅ FIX: Debounce saving
+        task.spawn(function()
+            local cfg = {}
             
-            if not isfile or not readfile then return end
-            if not isfile(path) then return end
-            
-            local content = readfile(path)
-            if not content or content == "" then return end
-            
-            local decoded = HttpService:JSONDecode(content)
-            if type(decoded) ~= "table" then return end
-            
-            -- Load dengan delay untuk setiap flag
-            for flag, value in pairs(decoded) do
-                if Dunhill.Flags[flag] and Dunhill.Flags[flag].SetValue then
-                    task.spawn(function()
-                        task.wait(0.05) -- Kasih jeda kecil
-                        pcall(function()
-                            Dunhill.Flags[flag]:SetValue(value)
-                        end)
-                    end)
+            pcall(function()
+                for flag, data in pairs(Dunhill.Flags) do
+                    if type(data) == "table" and data.CurrentValue ~= nil then
+                        cfg[flag] = data.CurrentValue
+                    end
                 end
+            end)
+            
+            local success, encoded = pcall(function() 
+                return HttpService:JSONEncode(cfg) 
+            end)
+            
+            if success and writefile then
+                pcall(function()
+                    if makefolder then
+                        if not isfolder(DunhillFolder) then 
+                            makefolder(DunhillFolder) 
+                        end
+                        if not isfolder(DunhillFolder .. "/" .. ConfigurationSaving.FolderName) then
+                            makefolder(DunhillFolder .. "/" .. ConfigurationSaving.FolderName)
+                        end
+                    end
+                    
+                    writefile(
+                        DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension, 
+                        encoded
+                    )
+                end)
             end
         end)
-        
-        if not success then
-            warn("[Dunhill] Failed to load config")
-        end
     end
+            
+        local function LoadConfig()
+            if not ConfigurationSaving.Enabled then return end
+            
+            -- ✅ FIX: Multiple layer protection
+            task.spawn(function()
+                task.wait(1.5) -- Tunggu lebih lama untuk semua element ready
+                
+                local success = pcall(function()
+                    if not isfile or not readfile then 
+                        warn("[Dunhill] File functions not available")
+                        return 
+                    end
+                    
+                    local path = DunhillFolder .. "/" .. ConfigurationSaving.FolderName .. "/" .. ConfigurationSaving.FileName .. ConfigurationExtension
+                    
+                    if not isfile(path) then 
+                        warn("[Dunhill] Config file not found")
+                        return 
+                    end
+                    
+                    local content = readfile(path)
+                    if not content or content == "" then 
+                        warn("[Dunhill] Config file empty")
+                        return 
+                    end
+                    
+                    local decoded
+                    local decodeSuccess = pcall(function()
+                        decoded = HttpService:JSONDecode(content)
+                    end)
+                    
+                    if not decodeSuccess or type(decoded) ~= "table" then 
+                        warn("[Dunhill] Invalid config format")
+                        return 
+                    end
+                    
+                    -- ✅ FIX: Load dengan delay dan validasi
+                    for flag, value in pairs(decoded) do
+                        task.spawn(function()
+                            task.wait(0.1) -- Delay per flag
+                            
+                            if Dunhill.Flags[flag] then
+                                pcall(function()
+                                    if Dunhill.Flags[flag].SetValue then
+                                        Dunhill.Flags[flag]:SetValue(value)
+                                    elseif type(Dunhill.Flags[flag]) == "table" then
+                                        Dunhill.Flags[flag].CurrentValue = value
+                                    end
+                                end)
+                            end
+                        end)
+                    end
+                    
+                    print("[Dunhill] Config loaded successfully")
+                end)
+                
+                if not success then
+                    warn("[Dunhill] Failed to load config")
+                end
+            end)
+        end
     
     Window.SaveConfiguration = SaveConfig
     Window.LoadConfiguration = LoadConfig
@@ -472,10 +523,17 @@ end
         TabBtn.MouseButton1Click:Connect(ActivateTab)
         
         -- ✅ FIX: Aktifkan tab pertama dengan delay lebih panjang
+-- ✅ FIX: Aktifkan tab pertama dengan delay lebih panjang dan validasi
         if #Window.Tabs == 0 then
             task.spawn(function()
-                task.wait(0.5) -- Tambah delay
-                pcall(ActivateTab)
+                task.wait(0.8) -- Delay lebih lama
+                
+                pcall(function()
+                    if TabContent and TabContent.Parent then
+                        ActivateTab()
+                        print("[Dunhill] First tab activated")
+                    end
+                end)
             end)
         end
         
@@ -825,11 +883,26 @@ end
                 local Flag = config.Flag
                 local Callback = config.Callback or function() end
                 
-                local Frame = Instance.new("Frame", Container)
-                Frame.Size = UDim2.new(1, 0, 0, 65)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BorderSizePixel = 0
-                Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
+                local CurrentValue = "" -- Track current value
+                
+                -- ✅ FIX: Tambah pcall untuk semua operasi
+                local success, Frame = pcall(function()
+                    local frame = Instance.new("Frame")
+                    frame.Size = UDim2.new(1, 0, 0, 65)
+                    frame.BackgroundColor3 = Theme.ElementBg
+                    frame.BorderSizePixel = 0
+                    frame.Parent = Container
+                    return frame
+                end)
+                
+                if not success then
+                    warn("[Dunhill] Failed to create Input frame")
+                    return {SetValue = function() end}
+                end
+                
+                pcall(function()
+                    Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
+                end)
                 
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
@@ -858,39 +931,93 @@ end
                 InputBox.Font = Enum.Font.Gotham
                 InputBox.ClearTextOnFocus = false
                 InputBox.BorderSizePixel = 0
-                Instance.new("UICorner", InputBox).CornerRadius = UDim.new(0, 5)
+                InputBox.TextXAlignment = Enum.TextXAlignment.Left -- ✅ FIX: Tambah alignment
+                
+                pcall(function()
+                    Instance.new("UICorner", InputBox).CornerRadius = UDim.new(0, 5)
+                end)
                 
                 local InputPadding = Instance.new("UIPadding", InputBox)
                 InputPadding.PaddingLeft = UDim.new(0, 10)
                 InputPadding.PaddingRight = UDim.new(0, 10)
                 
-                InputBox.Focused:Connect(function()
-                    Tween(Stroke, {Color = Theme.Primary})
+                -- ✅ FIX: Wrap semua event dengan pcall
+                pcall(function()
+                    InputBox.Focused:Connect(function()
+                        pcall(function()
+                            Tween(Stroke, {Color = Theme.Primary})
+                        end)
+                    end)
                 end)
                 
-                InputBox.FocusLost:Connect(function()
-                    Tween(Stroke, {Color = Theme.ElementBorder})
-                    local text = InputBox.Text
-                    if Flag then
-                        Dunhill.Flags[Flag] = {CurrentValue = text}
-                    end
-                    pcall(Callback, text)
-                    if RemoveTextAfterFocusLost then
-                        InputBox.Text = ""
-                    end
-                    SaveConfig()
+                pcall(function()
+                    InputBox.FocusLost:Connect(function(enterPressed)
+                        pcall(function()
+                            Tween(Stroke, {Color = Theme.ElementBorder})
+                        end)
+                        
+                        local text = InputBox.Text or ""
+                        CurrentValue = text
+                        
+                        if Flag then
+                            Dunhill.Flags[Flag] = {
+                                CurrentValue = text,
+                                SetValue = function(newText)
+                                    pcall(function()
+                                        InputBox.Text = newText or ""
+                                        CurrentValue = newText or ""
+                                    end)
+                                end
+                            }
+                        end
+                        
+                        -- ✅ FIX: Callback dengan pcall
+                        task.spawn(function()
+                            pcall(Callback, text)
+                        end)
+                        
+                        if RemoveTextAfterFocusLost then
+                            pcall(function()
+                                InputBox.Text = ""
+                                CurrentValue = ""
+                            end)
+                        end
+                        
+                        -- ✅ FIX: SaveConfig dengan pcall
+                        task.spawn(function()
+                            pcall(SaveConfig)
+                        end)
+                    end)
                 end)
                 
+                -- ✅ FIX: Initialize flag
                 if Flag then
-                    Dunhill.Flags[Flag] = {CurrentValue = ""}
+                    Dunhill.Flags[Flag] = {
+                        CurrentValue = CurrentValue,
+                        SetValue = function(newText)
+                            pcall(function()
+                                InputBox.Text = newText or ""
+                                CurrentValue = newText or ""
+                                if Flag then
+                                    Dunhill.Flags[Flag].CurrentValue = newText or ""
+                                end
+                            end)
+                        end
+                    }
                 end
                 
                 return {
                     SetValue = function(_, text)
-                        InputBox.Text = text
-                        if Flag then
-                            Dunhill.Flags[Flag] = {CurrentValue = text}
-                        end
+                        pcall(function()
+                            InputBox.Text = text or ""
+                            CurrentValue = text or ""
+                            if Flag then
+                                Dunhill.Flags[Flag].CurrentValue = text or ""
+                            end
+                        end)
+                    end,
+                    GetValue = function()
+                        return CurrentValue
                     end
                 }
             end

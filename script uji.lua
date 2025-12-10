@@ -1540,21 +1540,6 @@ webhookSection:CreateInput({
     end
 })
 
--- Input Discord User ID (untuk mention)
-webhookSection:CreateInput({
-    Name = "Discord User ID (Optional)",
-    PlaceholderText = "123456789012345678",
-    RemoveTextAfterFocusLost = false,
-    Callback = function(text)
-        if text and text ~= "" and tonumber(text) then
-            DiscordUserID = text
-            print("✅ Discord User ID Set:", text)
-        else
-            DiscordUserID = ""
-            print("⚠️ Discord User ID Cleared (No mention)")
-        end
-    end
-})
 
 -- Input Custom Username
 webhookSection:CreateInput({
@@ -1684,25 +1669,7 @@ infoSection:CreateLabel({
     Text = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 })
 
-infoSection:CreateLabel({
-    Text = "📖 How to Get Discord User ID:"
-})
 
-infoSection:CreateLabel({
-    Text = "1. Enable Developer Mode (Settings → Advanced)"
-})
-
-infoSection:CreateLabel({
-    Text = "2. Right-click your profile in Discord"
-})
-
-infoSection:CreateLabel({
-    Text = "3. Click 'Copy User ID'"
-})
-
-infoSection:CreateLabel({
-    Text = "4. Paste it in the textbox above!"
-})
 
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🔔 Webhook Tab Loaded!")

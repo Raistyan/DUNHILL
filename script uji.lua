@@ -75,12 +75,10 @@ local tab = window:CreateTab({
 local section = tab:CreateSection({ Name = "Fishing Controls" })
 
 -- 🧠 Variabel utama
-local autoFishing = false
-local blatanFishing = false
-
 local cancelDelay = 0
 local waitDelay = 0
-
+local autoFishing = false
+local blatanFishing = false
 
 
 -- 📡 Service & Remote references
@@ -119,26 +117,22 @@ end
 ---------------------------------------
 local function doFishingBlatan()
     while blatanFishing do
-        
-        task.spawn(function()
-            chargeRod:InvokeServer()
+        pcall(function()
+            spawn(function()
+                chargeRod:InvokeServer(1)
+                startFishing:InvokeServer(
+                    math.random(-1, 1),
+                    1,
+                    math.random(1000000, 9999999)
+                )
+            end)
+            
+            task.wait(waitDelay)
+            finishFishing:FireServer()
+            
+            task.wait(cancelDelay)
+            cancelFishing:InvokeServer()
         end)
-        task.spawn(function()
-            chargeRod:InvokeServer()
-        end)
-
-        task.spawn(function()
-            startFishing:InvokeServer(-1.233184814453125, 0.06081610394009457, 1762887821.300317)
-        end)
-        task.spawn(function()
-            startFishing:InvokeServer(-1.233184814453125, 0.06081610394009457, 1762887821.300317)
-        end)
-
-        task.wait(waitDelay)
-        finishFishing:FireServer()
-
-        task.wait(cancelDelay)
-        cancelFishing:InvokeServer()
     end
 end
 
@@ -176,6 +170,21 @@ section:CreateToggle({
     end
 })
 
+    -- 📦 INPUT WAIT DELAY (TEXTBOX)
+    section:CreateInput({
+        Name = "Wait Delay (detik)",
+        PlaceholderText = "0.1",
+        RemoveTextAfterFocusLost = false,
+        Callback = function(text)
+            local num = tonumber(text)
+            if num then
+                waitDelay = num
+                print("WaitDelay =", waitDelay)
+            else
+                print("❌ Input WaitDelay harus angka!")
+            end
+        end
+    })
 
 
     -- 📦 INPUT CANCEL DELAY (TEXBOX)
@@ -194,21 +203,104 @@ section:CreateToggle({
         end
     })
 
-    -- 📦 INPUT WAIT DELAY (TEXTBOX)
-    section:CreateInput({
-        Name = "Wait Delay (detik)",
-        PlaceholderText = "0.1",
-        RemoveTextAfterFocusLost = false,
-        Callback = function(text)
-            local num = tonumber(text)
-            if num then
-                waitDelay = num
-                print("WaitDelay =", waitDelay)
-            else
-                print("❌ Input WaitDelay harus angka!")
-            end
+
+
+-- ========================================
+-- BLATANT FISH (OPTIMIZED VERSION)
+-- ========================================
+local blatantSection = tab:CreateSection({ Name = "⚡ Blatant Fish System" })
+
+BlatantFishingDelay = 0.70
+BlatantCancelDelay = 0.30
+AutoFishEnabled = false
+
+-- SAFE PARALLEL EXECUTION
+local function safeFire(func)
+    task.spawn(function()
+        pcall(func)
+    end)
+end
+
+-- MAIN LOOP (PARAMETER SESUAI GAME)
+local function UltimateBypassFishing()
+    task.spawn(function()
+        while AutoFishEnabled do
+            local currentTime = workspace:GetServerTimeNow()
+            
+            -- CAST
+            safeFire(function()
+                chargeRod:InvokeServer({[1] = currentTime})
+            end)
+            safeFire(function()
+                startFishing:InvokeServer(1, 0, currentTime)
+            end)
+            
+            task.wait(BlatantFishingDelay)
+            
+            -- COMPLETE
+            safeFire(function()
+                finishFishing:FireServer()
+            end)
+            
+            task.wait(BlatantCancelDelay)
+            
+            -- CANCEL
+            safeFire(function()
+                cancelFishing:InvokeServer()
+            end)
+            
+            task.wait() -- anti-freeze
         end
-    })
+    end)
+end
+
+-- UI: Fish Delay Input
+blatantSection:CreateInput({
+    Name = "Fish Delay (Naikin Jika Ikan Ga Keangkat)",
+    Flag = "blatantFishDelay",
+    PlaceholderText = "0.70",
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            BlatantFishingDelay = num
+            print("🎣 Fish Delay: " .. num .. "s")
+        else
+            print("⚠️ Input harus angka!")
+        end
+    end
+})
+
+-- UI: Cancel Delay Input
+blatantSection:CreateInput({
+    Name = "Cancel Delay (Lempar Rod Selanjutnya)",
+    Flag = "blatantCancelDelay",    
+    PlaceholderText = "0.30",
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            BlatantCancelDelay = num
+            print("⏱️ Cancel Delay: " .. num .. "s")
+        else
+            print("⚠️ Input harus angka!")
+        end
+    end
+})
+
+-- TOGGLE AUTO FISH (OPTIMIZED)
+blatantSection:CreateToggle({
+    Name = "⚡ Auto Fish (Optimized 2x Speed)",
+    Flag = "ultimateAutoFish",
+    CurrentValue = false,
+    Callback = function(state)
+        AutoFishEnabled = state
+        if state then
+            print("🟢 BLATANT FISH: ENABLED")
+            UltimateBypassFishing()
+        else
+            print("🔴 AUTO FISH STOPPED")
+        end
+    end
+})
 
 
 
@@ -1254,6 +1346,8 @@ performanceSection:CreateToggle({
         end
     end
 })
+
+
 
 
 -- ========================================

@@ -167,9 +167,10 @@ end
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"
-    Main.Size = UDim2.new(0, 600, 0, 400)
-    Main.Position = UDim2.new(0.5, -300, 0.5, -200)
+    Main.Size = UDim2.new(0, 480, 0, 320)
+    Main.Position = UDim2.new(0.5, -240, 0.5, -160)
     Main.BackgroundColor3 = Theme.Background
+    Main.BackgroundTransparency = 0.15
     Main.BorderSizePixel = 0
     Main.ClipsDescendants = true
     Main.Parent = ScreenGui
@@ -192,6 +193,7 @@ end
     TopBar.Name = "TopBar"
     TopBar.Size = UDim2.new(1, 0, 0, 45)
     TopBar.BackgroundColor3 = Theme.TopBar
+    TopBar.BackgroundTransparency = 0.15
     TopBar.BorderSizePixel = 0
     
     local TopBarCorner = Instance.new("UICorner", TopBar)
@@ -280,6 +282,7 @@ end
     Sidebar.Size = UDim2.new(0, 150, 1, -15)
     Sidebar.Position = UDim2.new(0, 10, 0, 10)
     Sidebar.BackgroundColor3 = Theme.Sidebar
+    Sidebar.BackgroundTransparency = 0.3
     Sidebar.BorderSizePixel = 0
     Sidebar.ScrollBarThickness = 3
     Sidebar.ScrollBarImageColor3 = Theme.Primary
@@ -323,7 +326,7 @@ end
         Main.Visible = true
         Main.Size = UDim2.new(0, 0, 0, 0)
         Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-        Tween(Main, {Size = UDim2.new(0, 600, 0, 400), Position = UDim2.new(0.5, -300, 0.5, -200)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        Tween(Main, {Size = UDim2.new(0, 500, 0, 350), Position = UDim2.new(0.5, -250, 0.5, -175)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
     end)
     
     local Window = {}

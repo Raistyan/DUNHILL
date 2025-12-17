@@ -193,7 +193,7 @@ end
     TopBar.Name = "TopBar"
     TopBar.Size = UDim2.new(1, 0, 0, 45)
     TopBar.BackgroundColor3 = Theme.TopBar
-    TopBar.BackgroundTransparency = 0.15
+    TopBar.BackgroundTransparency = 0.3
     TopBar.BorderSizePixel = 0
     
     local TopBarCorner = Instance.new("UICorner", TopBar)
@@ -203,6 +203,7 @@ end
     TopBarExtend.Size = UDim2.new(1, 0, 0, 10)
     TopBarExtend.Position = UDim2.new(0, 0, 1, -10)
     TopBarExtend.BackgroundColor3 = Theme.TopBar
+    TopBarExtend.BackgroundTransparency = 0.3
     TopBarExtend.BorderSizePixel = 0
     
     local Title = Instance.new("TextLabel", TopBar)
@@ -557,12 +558,14 @@ end
             Section.Size = UDim2.new(1, 0, 0, 0)
             Section.AutomaticSize = Enum.AutomaticSize.Y
             Section.BackgroundColor3 = Theme.BackgroundSecondary
+            Section.BackgroundTransparency = 0.4
             Section.BorderSizePixel = 0
             Instance.new("UICorner", Section).CornerRadius = UDim.new(0, 8)
             
             local SectionStroke = Instance.new("UIStroke", Section)
             SectionStroke.Color = Theme.ElementBorder
             SectionStroke.Thickness = 1
+            SectionStroke.Transparency = 0.3
             SectionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
             
             local SectionPadding = Instance.new("UIPadding", Section)
@@ -622,6 +625,7 @@ end
                 local Btn = Instance.new("TextButton", Container)
                 Btn.Size = UDim2.new(1, 0, 0, 38)
                 Btn.BackgroundColor3 = Theme.ElementBg
+                Btn.BackgroundTransparency = 0.3
                 Btn.Text = Name
                 Btn.TextColor3 = Theme.Text
                 Btn.TextSize = 14
@@ -633,6 +637,7 @@ end
                 local Stroke = Instance.new("UIStroke", Btn)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
+                Stroke.Transparency = 0.3
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 Btn.MouseEnter:Connect(function()
@@ -669,12 +674,14 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
+                Frame.BackgroundTransparency = 0.3
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
+                Stroke.Transparency = 0.3
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -756,12 +763,14 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 54)
                 Frame.BackgroundColor3 = Theme.ElementBg
+                Frame.BackgroundTransparency = 0.3
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
+                Stroke.Transparency = 0.3
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -893,6 +902,7 @@ end
                     local frame = Instance.new("Frame")
                     frame.Size = UDim2.new(1, 0, 0, 65)
                     frame.BackgroundColor3 = Theme.ElementBg
+                    frame.BackgroundTransparency = 0.3
                     frame.BorderSizePixel = 0
                     frame.Parent = Container
                     return frame
@@ -910,6 +920,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
+                Stroke.Transparency = 0.3
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -1036,6 +1047,7 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
+                Frame.BackgroundTransparency = 0.3
                 Frame.BorderSizePixel = 0
                 Frame.ClipsDescendants = true
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
@@ -1043,6 +1055,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
+                Stroke.Transparency = 0.3
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local Btn = Instance.new("TextButton", Frame)
@@ -1185,12 +1198,14 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
+                Frame.BackgroundTransparency = 0.3
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
+                Stroke.Transparency = 0.3 
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -1269,12 +1284,14 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
+                Frame.BackgroundTransparency = 0.3
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
+                SectionStroke.Transparency = 0.3
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -1299,7 +1316,7 @@ end
                 local ColorStroke = Instance.new("UIStroke", ColorDisplay)
                 ColorStroke.Color = Theme.Primary
                 ColorStroke.Thickness = 1
-                
+                ColorStroke.Transparency = 0.3
                 ColorDisplay.MouseButton1Click:Connect(function()
                     pcall(Callback, Color)
                 end)
@@ -1350,7 +1367,7 @@ end
         local NotifStroke = Instance.new("UIStroke", Notif)
         NotifStroke.Color = Color
         NotifStroke.Thickness = 2
-        
+        NotifStroke.Transparency = 0.3
         local NotifTitle = Instance.new("TextLabel", Notif)
         NotifTitle.Size = UDim2.new(1, -20, 0, 26)
         NotifTitle.Position = UDim2.new(0, 12, 0, 10)

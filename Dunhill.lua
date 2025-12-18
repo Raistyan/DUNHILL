@@ -565,7 +565,7 @@ end
             local SectionStroke = Instance.new("UIStroke", Section)
             SectionStroke.Color = Theme.ElementBorder
             SectionStroke.Thickness = 1
-            SectionStroke.Transparency = 0.3
+            SectionStroke.Transparency = 0.4
             SectionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
             
             local SectionPadding = Instance.new("UIPadding", Section)
@@ -637,7 +637,7 @@ end
                 local Stroke = Instance.new("UIStroke", Btn)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                Stroke.Transparency = 0.3
+                Stroke.Transparency = 0.4
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 Btn.MouseEnter:Connect(function()
@@ -681,7 +681,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                Stroke.Transparency = 0.3
+                Stroke.Transparency = 0.4
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -770,7 +770,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                Stroke.Transparency = 0.3
+                Stroke.Transparency = 0.4
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -920,7 +920,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                Stroke.Transparency = 0.3
+                Stroke.Transparency = 0.4
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -1055,7 +1055,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                Stroke.Transparency = 0.3
+                Stroke.Transparency = 0.4
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local Btn = Instance.new("TextButton", Frame)
@@ -1205,7 +1205,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                Stroke.Transparency = 0.3 
+                Stroke.Transparency = 0.4 
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -1291,7 +1291,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                SectionStroke.Transparency = 0.3
+                SectionStroke.Transparency = 0.4
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
@@ -1316,7 +1316,7 @@ end
                 local ColorStroke = Instance.new("UIStroke", ColorDisplay)
                 ColorStroke.Color = Theme.Primary
                 ColorStroke.Thickness = 1
-                ColorStroke.Transparency = 0.3
+                ColorStroke.Transparency = 0.4
                 ColorDisplay.MouseButton1Click:Connect(function()
                     pcall(Callback, Color)
                 end)
@@ -1367,7 +1367,7 @@ end
         local NotifStroke = Instance.new("UIStroke", Notif)
         NotifStroke.Color = Color
         NotifStroke.Thickness = 2
-        NotifStroke.Transparency = 0.3
+        NotifStroke.Transparency = 0.4
         local NotifTitle = Instance.new("TextLabel", Notif)
         NotifTitle.Size = UDim2.new(1, -20, 0, 26)
         NotifTitle.Position = UDim2.new(0, 12, 0, 10)

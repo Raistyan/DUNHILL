@@ -167,8 +167,8 @@ end
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"
-    Main.Size = UDim2.new(0, 480, 0, 320)
-    Main.Position = UDim2.new(0.5, -240, 0.5, -160)
+    Main.Size = UDim2.new(0, 460, 0, 290)
+    Main.Position = UDim2.new(0.5, -230, 0.5, -145)
     Main.BackgroundColor3 = Theme.Background
     Main.BackgroundTransparency = 0.15
     Main.BorderSizePixel = 0

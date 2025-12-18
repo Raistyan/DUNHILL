@@ -311,24 +311,29 @@ end
     
     MinBtn.MouseEnter:Connect(function() Tween(MinBtn, {BackgroundColor3 = Theme.ElementBgHover}) end)
     MinBtn.MouseLeave:Connect(function() Tween(MinBtn, {BackgroundColor3 = Theme.ElementBg}) end)
-    MinBtn.MouseButton1Click:Connect(function()
-        Tween(Main, {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-        wait(0.3)
-        Main.Visible = false
-        MinimizedIcon.Visible = true
-        MinimizedIcon.Size = UDim2.new(0, 0, 0, 0)
-        Tween(MinimizedIcon, {Size = UDim2.new(0, 65, 0, 65)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-    end)
-    
-    MinimizedIcon.MouseButton1Click:Connect(function()
-        Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-        wait(0.3)
-        MinimizedIcon.Visible = false
-        Main.Visible = true
-        Main.Size = UDim2.new(0, 0, 0, 0)
-        Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-        Tween(Main, {Size = UDim2.new(0, 500, 0, 350), Position = UDim2.new(0.5, -250, 0.5, -175)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-    end)
+-- ✅ FIX: Simpan ukuran dan posisi asli
+local OriginalSize = Main.Size
+local OriginalPosition = Main.Position
+
+MinBtn.MouseButton1Click:Connect(function()
+    Tween(Main, {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+    wait(0.3)
+    Main.Visible = false
+    MinimizedIcon.Visible = true
+    MinimizedIcon.Size = UDim2.new(0, 0, 0, 0)
+    Tween(MinimizedIcon, {Size = UDim2.new(0, 65, 0, 65)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+end)
+
+MinimizedIcon.MouseButton1Click:Connect(function()
+    Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+    wait(0.3)
+    MinimizedIcon.Visible = false
+    Main.Visible = true
+    Main.Size = UDim2.new(0, 0, 0, 0)
+    Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+    -- ✅ FIX: Gunakan ukuran dan posisi asli yang tersimpan
+    Tween(Main, {Size = OriginalSize, Position = OriginalPosition}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+end)
     
     local Window = {}
     Window.Tabs = {}

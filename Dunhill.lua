@@ -294,7 +294,7 @@ end
     local SidebarLayout = Instance.new("UIListLayout", Sidebar)
     SidebarLayout.Padding = UDim.new(0, 6)
     SidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    
+    SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
     local SidebarPadding = Instance.new("UIPadding", Sidebar)
     SidebarPadding.PaddingTop = UDim.new(0, 10)
     SidebarPadding.PaddingBottom = UDim.new(0, 10)

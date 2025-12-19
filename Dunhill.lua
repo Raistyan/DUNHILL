@@ -210,7 +210,7 @@ end
     Title.Size = UDim2.new(0, 200, 1, 0)
     Title.Position = UDim2.new(0, 20, 0, 0)
     Title.BackgroundTransparency = 1
-    Title.Text = "⚡ " .. WindowName
+    Title.Text = "👻" .. WindowName
     Title.TextColor3 = Theme.Accent
     Title.TextSize = 17
     Title.Font = Enum.Font.GothamBold

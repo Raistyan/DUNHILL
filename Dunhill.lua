@@ -63,7 +63,7 @@ local Theme = {
     Error = Color3.fromRGB(240, 80, 80),
     Info = Color3.fromRGB(100, 160, 255),
     
-    ToggleOn = Color3.fromRGB(200, 200, 200),
+    ToggleOn = Color3.fromRGB(100, 160, 255),
     ToggleOff = Color3.fromRGB(50, 50, 50),
     
     SliderFill = Color3.fromRGB(190, 190, 190),
@@ -270,7 +270,7 @@ end
     IconPadding.PaddingBottom = UDim.new(0, 10)
     IconPadding.PaddingLeft = UDim.new(0, 10)
     IconPadding.PaddingRight = UDim.new(0, 10)
-
+    MakeDraggable(MinimizedIcon, MinimizedIcon)
     
     local Content = Instance.new("Frame", Main)
     Content.Name = "Content"

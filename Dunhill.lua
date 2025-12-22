@@ -63,7 +63,7 @@ local Theme = {
     Error = Color3.fromRGB(240, 80, 80),
     Info = Color3.fromRGB(100, 160, 255),
     
-    ToggleOn = Color3.fromRGB(200, 200, 200),
+    ToggleOn = Color3.fromRGB(100, 160, 255),
     ToggleOff = Color3.fromRGB(50, 50, 50),
     
     SliderFill = Color3.fromRGB(190, 190, 190),
@@ -270,7 +270,7 @@ end
     IconPadding.PaddingBottom = UDim.new(0, 10)
     IconPadding.PaddingLeft = UDim.new(0, 10)
     IconPadding.PaddingRight = UDim.new(0, 10)
-
+    MakeDraggable(MinimizedIcon, MinimizedIcon)
     
     local Content = Instance.new("Frame", Main)
     Content.Name = "Content"
@@ -1132,9 +1132,15 @@ end)
                         NameLabel.Text = option
                         Opened = false
                         UpdateSize()
-                        if Flag then
-                            Dunhill.Flags[Flag] = {CurrentValue = option}
-                        end
+                        
+                        -- ✅ TAMBAHKAN: Auto scroll setelah pilih
+                        task.spawn(function()
+                            task.wait(0.15)
+                            local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
+                            TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
+                        end)
+                        
+                        if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
                         pcall(Callback, option)
                         SaveConfig()
                     end)
@@ -1184,6 +1190,14 @@ end)
                                 NameLabel.Text = option
                                 Opened = false
                                 UpdateSize()
+                                
+                                -- ✅ TAMBAHKAN INI JUGA
+                                task.spawn(function()
+                                    task.wait(0.15)
+                                    local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
+                                    TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
+                                end)
+                                
                                 if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
                                 pcall(Callback, option)
                                 SaveConfig()

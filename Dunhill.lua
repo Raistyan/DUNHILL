@@ -324,15 +324,41 @@ MinBtn.MouseButton1Click:Connect(function()
     Tween(MinimizedIcon, {Size = UDim2.new(0, 65, 0, 65)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 end)
 
-MinimizedIcon.MouseButton1Click:Connect(function()
-    Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-    wait(0.3)
-    MinimizedIcon.Visible = false
-    Main.Visible = true
-    Main.Size = UDim2.new(0, 0, 0, 0)
-    Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-    -- ✅ FIX: Gunakan ukuran dan posisi asli yang tersimpan
-    Tween(Main, {Size = OriginalSize, Position = OriginalPosition}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+-- ✅ FIX: Bedakan antara drag dan click
+local MinIconDragging = false
+local MinIconDragStart = nil
+
+MinimizedIcon.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        MinIconDragStart = tick()
+        MinIconDragging = false
+    end
+end)
+
+MinimizedIcon.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if MinIconDragStart and (tick() - MinIconDragStart) > 0.15 then
+            MinIconDragging = true
+        end
+    end
+end)
+
+MinimizedIcon.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        -- ✅ Hanya buka window jika TIDAK sedang drag
+        if not MinIconDragging and MinIconDragStart and (tick() - MinIconDragStart) < 0.3 then
+            Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+            wait(0.3)
+            MinimizedIcon.Visible = false
+            Main.Visible = true
+            Main.Size = UDim2.new(0, 0, 0, 0)
+            Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+            Tween(Main, {Size = OriginalSize, Position = OriginalPosition}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        end
+        
+        MinIconDragging = false
+        MinIconDragStart = nil
+    end
 end)
     
     local Window = {}
@@ -1132,13 +1158,18 @@ end)
                         NameLabel.Text = option
                         Opened = false
                         UpdateSize()
-                        if Flag then
-                            Dunhill.Flags[Flag] = {CurrentValue = option}
-                        end
+                        
+                        -- ✅ TAMBAHKAN INI JUGA
+                        task.spawn(function()
+                            task.wait(0.15)
+                            local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
+                            TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
+                        end)
+                        
+                        if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
                         pcall(Callback, option)
                         SaveConfig()
                     end)
-                end
                 
                 Btn.MouseButton1Click:Connect(function()
                     Opened = not Opened
@@ -1184,6 +1215,14 @@ end)
                                 NameLabel.Text = option
                                 Opened = false
                                 UpdateSize()
+                                
+                                -- ✅ TAMBAHKAN: Auto scroll setelah pilih
+                                task.spawn(function()
+                                    task.wait(0.15)
+                                    local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
+                                    TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
+                                end)
+                                
                                 if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
                                 pcall(Callback, option)
                                 SaveConfig()

@@ -324,16 +324,32 @@ MinBtn.MouseButton1Click:Connect(function()
     Tween(MinimizedIcon, {Size = UDim2.new(0, 65, 0, 65)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 end)
 
-MinimizedIcon.MouseButton1Click:Connect(function()
-    Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-    wait(0.3)
-    MinimizedIcon.Visible = false
-    Main.Visible = true
-    Main.Size = UDim2.new(0, 0, 0, 0)
-    Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-    -- ✅ FIX: Gunakan ukuran dan posisi asli yang tersimpan
-    Tween(Main, {Size = OriginalSize, Position = OriginalPosition}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-end)
+        local isDraggingIcon = false
+
+        MinimizedIcon.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                isDraggingIcon = false
+            end
+        end)
+
+        MinimizedIcon.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                isDraggingIcon = true
+            end
+        end)
+
+        MinimizedIcon.InputEnded:Connect(function(input)
+            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not isDraggingIcon then
+                Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+                wait(0.3)
+                MinimizedIcon.Visible = false
+                Main.Visible = true
+                Main.Size = UDim2.new(0, 0, 0, 0)
+                Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+                Tween(Main, {Size = OriginalSize, Position = OriginalPosition}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+            end
+            isDraggingIcon = false
+        end)
     
     local Window = {}
     Window.Tabs = {}

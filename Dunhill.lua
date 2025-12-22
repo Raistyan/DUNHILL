@@ -271,7 +271,44 @@ end
     IconPadding.PaddingLeft = UDim.new(0, 10)
     IconPadding.PaddingRight = UDim.new(0, 10)
     MakeDraggable(MinimizedIcon, MinimizedIcon)
-    
+    -- ✅ FIX: Deteksi drag vs click untuk MinimizedIcon
+local MinIconDragging = false
+local MinIconDragStart = nil
+
+MinimizedIcon.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        MinIconDragStart = tick()
+        MinIconDragging = false
+    end
+end)
+
+MinimizedIcon.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if MinIconDragStart and (tick() - MinIconDragStart) > 0.15 then
+            MinIconDragging = true
+        end
+    end
+end)
+
+MinimizedIcon.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        -- ✅ Hanya buka window jika TIDAK sedang drag
+        if not MinIconDragging and MinIconDragStart and (tick() - MinIconDragStart) < 0.3 then
+            Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+            wait(0.3)
+            MinimizedIcon.Visible = false
+            Main.Visible = true
+            Main.Size = UDim2.new(0, 0, 0, 0)
+            Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+            Tween(Main, {Size = OriginalSize, Position = OriginalPosition}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        end
+        
+        MinIconDragging = false
+        MinIconDragStart = nil
+    end
+end)
+
+
     local Content = Instance.new("Frame", Main)
     Content.Name = "Content"
     Content.Size = UDim2.new(1, 0, 1, -45)
@@ -324,42 +361,7 @@ MinBtn.MouseButton1Click:Connect(function()
     Tween(MinimizedIcon, {Size = UDim2.new(0, 65, 0, 65)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 end)
 
--- ✅ FIX: Bedakan antara drag dan click
-local MinIconDragging = false
-local MinIconDragStart = nil
 
-MinimizedIcon.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        MinIconDragStart = tick()
-        MinIconDragging = false
-    end
-end)
-
-MinimizedIcon.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        if MinIconDragStart and (tick() - MinIconDragStart) > 0.15 then
-            MinIconDragging = true
-        end
-    end
-end)
-
-MinimizedIcon.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        -- ✅ Hanya buka window jika TIDAK sedang drag
-        if not MinIconDragging and MinIconDragStart and (tick() - MinIconDragStart) < 0.3 then
-            Tween(MinimizedIcon, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-            wait(0.3)
-            MinimizedIcon.Visible = false
-            Main.Visible = true
-            Main.Size = UDim2.new(0, 0, 0, 0)
-            Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-            Tween(Main, {Size = OriginalSize, Position = OriginalPosition}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-        end
-        
-        MinIconDragging = false
-        MinIconDragStart = nil
-    end
-end)
     
     local Window = {}
     Window.Tabs = {}

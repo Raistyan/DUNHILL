@@ -447,7 +447,7 @@ end)
     function Window:CreateTab(config)
         config = config or {}
         local TabName = config.Name or "Tab"
-        local TabIcon = config.Icon or ""
+        local TabIcon = config.Icon or "rbxassetid://7733964640" 
         
         local TabBtn = Instance.new("TextButton", Sidebar)
         TabBtn.Name = TabName
@@ -460,15 +460,15 @@ end)
         
         
         
-        local Icon = Instance.new("ImageLabel", TabBtn)  -- Ganti TextLabel jadi ImageLabel
+        local Icon = Instance.new("ImageLabel", TabBtn)
         Icon.Name = "Icon"
-        Icon.Size = UDim2.new(0, 24, 0, 24)
-        Icon.Position = UDim2.new(0, 12, 0.5, -12)
+        Icon.Size = UDim2.new(0, 20, 0, 20)
+        Icon.Position = UDim2.new(0, 10, 0.5, -10)
         Icon.BackgroundTransparency = 1
-        Icon.Image = TabIcon  -- Gunakan rbxassetid://...
-        Icon.ImageColor3 = Theme.TextDim
+        Icon.Image = TabIcon  -- Pakai asset ID
+        Icon.ImageColor3 = Theme.TextDim  -- Warna icon bisa diubah
         Icon.ScaleType = Enum.ScaleType.Fit
-        
+            
         
         
         local Label = Instance.new("TextLabel", TabBtn)

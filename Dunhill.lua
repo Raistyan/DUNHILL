@@ -285,7 +285,7 @@ end
     
     local Sidebar = Instance.new("ScrollingFrame", Content)
     Sidebar.Name = "Sidebar"
-    Sidebar.Size = UDim2.new(0, 120, 1, -15)
+    Sidebar.Size = UDim2.new(0, 135, 1, -15)
     Sidebar.Position = UDim2.new(0, 10, 0, 10)
     Sidebar.BackgroundColor3 = Theme.Sidebar
     Sidebar.BackgroundTransparency = 0.3
@@ -505,8 +505,8 @@ end)
         
         local TabContent = Instance.new("ScrollingFrame", Content)
         TabContent.Name = TabName .. "Content"
-        TabContent.Size = UDim2.new(1, -145, 1, -15)
-        TabContent.Position = UDim2.new(0, 135, 0, 10)
+        TabContent.Size = UDim2.new(1, -160, 1, -15)
+        TabContent.Position = UDim2.new(0, 150, 0, 10)
         TabContent.BackgroundColor3 = Theme.Background
         TabContent.BackgroundTransparency = 1
         TabContent.BorderSizePixel = 0

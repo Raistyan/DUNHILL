@@ -35,27 +35,41 @@ local DunhillFolder = "DunhillUI"
 local ConfigurationExtension = ".dhl"
 
 local Theme = {
-    Background = Color3.fromRGB(25, 25, 30),           -- Lebih gelap
-    BackgroundSecondary = Color3.fromRGB(30, 30, 35),  -- Sedikit lebih terang
-    TopBar = Color3.fromRGB(20, 20, 25),               -- Gelap
+    Background = Color3.fromRGB(25, 25, 30),
+    BackgroundSecondary = Color3.fromRGB(30, 30, 35),
+    TopBar = Color3.fromRGB(20, 20, 25),
     
-    Sidebar = Color3.fromRGB(28, 28, 33),              -- Dark grey
+    Sidebar = Color3.fromRGB(28, 28, 33),
     SidebarHover = Color3.fromRGB(35, 35, 40),
-    SidebarSelected = Color3.fromRGB(45, 140, 255),    -- Biru terang (penting!)
+    SidebarSelected = Color3.fromRGB(45, 140, 255),
     
-    Primary = Color3.fromRGB(45, 140, 255),            -- Biru VinzHub
+    Primary = Color3.fromRGB(45, 140, 255),
     Secondary = Color3.fromRGB(140, 140, 150),
-    Accent = Color3.fromRGB(255, 255, 255),            -- Putih bersih
+    Accent = Color3.fromRGB(255, 255, 255),
     
     ElementBg = Color3.fromRGB(35, 35, 40),
     ElementBgHover = Color3.fromRGB(40, 40, 45),
     ElementBorder = Color3.fromRGB(50, 50, 55),
     
-    Text = Color3.fromRGB(255, 255, 255),              -- Putih terang
-    TextDim = Color3.fromRGB(150, 150, 160),           -- Abu-abu muda
+    Text = Color3.fromRGB(255, 255, 255),
+    TextDim = Color3.fromRGB(150, 150, 160),
+    TextDark = Color3.fromRGB(20, 20, 25),  -- ✅ TAMBAH INI
     
-    ToggleOn = Color3.fromRGB(45, 140, 255),           -- Biru
+    ToggleOn = Color3.fromRGB(45, 140, 255),
     ToggleOff = Color3.fromRGB(60, 60, 65),
+    
+    -- ✅ TAMBAH SEMUA INI:
+    SliderBg = Color3.fromRGB(40, 40, 45),
+    SliderFill = Color3.fromRGB(45, 140, 255),
+    
+    TabActive = Color3.fromRGB(45, 140, 255),
+    TabInactive = Color3.fromRGB(35, 35, 40),
+    
+    -- Notification colors
+    Error = Color3.fromRGB(255, 80, 80),
+    Success = Color3.fromRGB(80, 255, 120),
+    Warning = Color3.fromRGB(255, 200, 80),
+    Info = Color3.fromRGB(100, 180, 255)
 }
 
 local function Tween(obj, props, duration, style, direction)
@@ -552,7 +566,7 @@ end)
         local Tab = {
             Button = TabBtn, 
             Content = TabContent,
-            --Icon = Icon,--
+            Icon = Icon,
             Label = Label
         }
         table.insert(Window.Tabs, Tab)

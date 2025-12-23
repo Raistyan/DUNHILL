@@ -53,19 +53,18 @@ local Theme = {
     
     Text = Color3.fromRGB(255, 255, 255),
     TextDim = Color3.fromRGB(150, 150, 160),
-    TextDark = Color3.fromRGB(20, 20, 25),  -- ✅ TAMBAH INI
+    TextDark = Color3.fromRGB(20, 20, 25),
     
     ToggleOn = Color3.fromRGB(45, 140, 255),
     ToggleOff = Color3.fromRGB(60, 60, 65),
     
-    -- ✅ TAMBAH SEMUA INI:
+    -- ✅ TAMBAHAN WARNA YANG HILANG
     SliderBg = Color3.fromRGB(40, 40, 45),
     SliderFill = Color3.fromRGB(45, 140, 255),
     
     TabActive = Color3.fromRGB(45, 140, 255),
     TabInactive = Color3.fromRGB(35, 35, 40),
     
-    -- Notification colors
     Error = Color3.fromRGB(255, 80, 80),
     Success = Color3.fromRGB(80, 255, 120),
     Warning = Color3.fromRGB(255, 200, 80),

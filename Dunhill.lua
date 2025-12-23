@@ -285,7 +285,7 @@ end
     
     local Sidebar = Instance.new("ScrollingFrame", Content)
     Sidebar.Name = "Sidebar"
-    Sidebar.Size = UDim2.new(0, 125, 1, -15)
+    Sidebar.Size = UDim2.new(0, 120, 1, -15)
     Sidebar.Position = UDim2.new(0, 10, 0, 10)
     Sidebar.BackgroundColor3 = Theme.Sidebar
     Sidebar.BackgroundTransparency = 0.3

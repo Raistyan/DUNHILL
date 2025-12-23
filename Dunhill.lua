@@ -488,23 +488,21 @@ end)
         Instance.new("UICorner", ActiveIndicator).CornerRadius = UDim.new(0, 2)
         
         
-        --[[
-        local Icon = Instance.new("TextLabel", TabBtn)
+        local Icon = Instance.new("ImageLabel", TabBtn)
         Icon.Name = "Icon"
-        Icon.Size = UDim2.new(0, 28, 1, 0)
-        Icon.Position = UDim2.new(0, 8, 0, 0)
+        Icon.Size = UDim2.new(0, 20, 0, 20)
+        Icon.Position = UDim2.new(0, 10, 0.5, -10)
         Icon.BackgroundTransparency = 1
-        Icon.Text = TabIcon
-        Icon.TextColor3 = Theme.TextDim
-        Icon.TextSize = 16
-        Icon.Font = Enum.Font.Gotham
-        ]]--
+        Icon.Image = TabIcon ~= "" and "rbxassetid://" .. TabIcon or ""
+        Icon.ImageColor3 = Theme.TextDim
+        Icon.ScaleType = Enum.ScaleType.Fit
+        Icon.Visible = TabIcon ~= ""
         
         
         local Label = Instance.new("TextLabel", TabBtn)
         Label.Name = "Label"
-        Label.Size = UDim2.new(1, -20, 1, 0)  
-        Label.Position = UDim2.new(0, 10, 0, 0) 
+        Label.Size = UDim2.new(1, -45, 1, 0)  
+        Label.Position = UDim2.new(0, TabIcon ~= "" and 35 or 10, 0, 0) 
         Label.BackgroundTransparency = 1
         Label.Text = TabName
         Label.TextColor3 = Theme.TextDim
@@ -553,6 +551,10 @@ end)
                 tab.Content.Visible = false
                 Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
                 Tween(tab.Label, {TextColor3 = Theme.TextDim})
+                -- ✅ TAMBAHKAN INI
+                if tab.Icon then
+                    Tween(tab.Icon, {ImageColor3 = Theme.TextDim})
+                end
                 -- Sembunyikan indicator
                 if tab.Button:FindFirstChild("ActiveIndicator") then
                     tab.Button.ActiveIndicator.Visible = false
@@ -563,6 +565,10 @@ end)
             TabContent.Visible = true
             Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
             Tween(Label, {TextColor3 = Theme.Text})
+            -- ✅ TAMBAHKAN INI
+            if Icon and Icon.Visible then
+                Tween(Icon, {ImageColor3 = Theme.Text})
+            end
             -- Tampilkan indicator
             if TabBtn:FindFirstChild("ActiveIndicator") then
                 TabBtn.ActiveIndicator.Visible = true
@@ -589,7 +595,7 @@ end)
         local Tab = {
             Button = TabBtn, 
             Content = TabContent,
-            --Icon = Icon,--
+            Icon = Icon,
             Label = Label
         }
         table.insert(Window.Tabs, Tab)

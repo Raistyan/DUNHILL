@@ -477,6 +477,15 @@ end)
         TabBtn.AutoButtonColor = false
         TabBtn.BorderSizePixel = 0
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 7)
+
+        local ActiveIndicator = Instance.new("Frame", TabBtn)
+        ActiveIndicator.Name = "ActiveIndicator"
+        ActiveIndicator.Size = UDim2.new(0, 3, 0.7, 0)
+        ActiveIndicator.Position = UDim2.new(0, 0, 0.15, 0)
+        ActiveIndicator.BackgroundColor3 = Theme.BorderBlue
+        ActiveIndicator.BorderSizePixel = 0
+        ActiveIndicator.Visible = false
+        Instance.new("UICorner", ActiveIndicator).CornerRadius = UDim.new(0, 2)
         
         
         --[[
@@ -543,15 +552,21 @@ end)
             for _, tab in pairs(Window.Tabs) do
                 tab.Content.Visible = false
                 Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
-               -- Tween(tab.Icon, {TextColor3 = Theme.TextDim})--
                 Tween(tab.Label, {TextColor3 = Theme.TextDim})
+                -- Sembunyikan indicator
+                if tab.Button:FindFirstChild("ActiveIndicator") then
+                    tab.Button.ActiveIndicator.Visible = false
+                end
             end
             
             Window.CurrentTab = TabContent
             TabContent.Visible = true
             Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
-            --Tween(Icon, {TextColor3 = Theme.Text})--
             Tween(Label, {TextColor3 = Theme.Text})
+            -- Tampilkan indicator
+            if TabBtn:FindFirstChild("ActiveIndicator") then
+                TabBtn.ActiveIndicator.Visible = true
+            end
         end
         
         TabBtn.MouseButton1Click:Connect(ActivateTab)

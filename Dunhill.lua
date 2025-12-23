@@ -35,40 +35,40 @@ local DunhillFolder = "DunhillUI"
 local ConfigurationExtension = ".dhl"
 
 local Theme = {
-    Background = Color3.fromRGB(25, 25, 30),
-    BackgroundSecondary = Color3.fromRGB(30, 30, 35),
-    TopBar = Color3.fromRGB(20, 20, 25),
+    Background = Color3.fromRGB(15, 15, 15),
+    BackgroundSecondary = Color3.fromRGB(20, 20, 20),
+    TopBar = Color3.fromRGB(18, 18, 18),
     
-    Sidebar = Color3.fromRGB(28, 28, 33),
-    SidebarHover = Color3.fromRGB(35, 35, 40),
-    SidebarSelected = Color3.fromRGB(45, 140, 255),
+    Sidebar = Color3.fromRGB(22, 22, 22),
+    SidebarHover = Color3.fromRGB(28, 28, 28),
+    SidebarSelected = Color3.fromRGB(180, 180, 180),
     
-    Primary = Color3.fromRGB(45, 140, 255),
-    Secondary = Color3.fromRGB(140, 140, 150),
-    Accent = Color3.fromRGB(255, 255, 255),
+    Primary = Color3.fromRGB(200, 200, 200),
+    Secondary = Color3.fromRGB(140, 140, 140),
+    Accent = Color3.fromRGB(220, 220, 220),
     
-    ElementBg = Color3.fromRGB(35, 35, 40),
-    ElementBgHover = Color3.fromRGB(40, 40, 45),
-    ElementBorder = Color3.fromRGB(50, 50, 55),
+    ElementBg = Color3.fromRGB(25, 25, 25),
+    ElementBgHover = Color3.fromRGB(30, 30, 30),
+    ElementBorder = Color3.fromRGB(45, 45, 45),
     
-    Text = Color3.fromRGB(255, 255, 255),
-    TextDim = Color3.fromRGB(150, 150, 160),
-    TextDark = Color3.fromRGB(20, 20, 25),
+    TabActive = Color3.fromRGB(60, 60, 60),
+    TabInactive = Color3.fromRGB(25, 25, 25),
+
+    Text = Color3.fromRGB(245, 245, 245),
+    TextDim = Color3.fromRGB(160, 160, 160),
+    TextDark = Color3.fromRGB(20, 20, 20),
     
-    ToggleOn = Color3.fromRGB(45, 140, 255),
-    ToggleOff = Color3.fromRGB(60, 60, 65),
+    Success = Color3.fromRGB(80, 200, 120),
+    Warning = Color3.fromRGB(255, 180, 0),
+    Error = Color3.fromRGB(240, 80, 80),
+    Info = Color3.fromRGB(100, 160, 255),
     
-    -- ✅ TAMBAHAN WARNA YANG HILANG
-    SliderBg = Color3.fromRGB(40, 40, 45),
-    SliderFill = Color3.fromRGB(45, 140, 255),
+    ToggleOn = Color3.fromRGB(100, 160, 255),
+    ToggleOff = Color3.fromRGB(50, 50, 50),
     
-    TabActive = Color3.fromRGB(45, 140, 255),
-    TabInactive = Color3.fromRGB(35, 35, 40),
-    
-    Error = Color3.fromRGB(255, 80, 80),
-    Success = Color3.fromRGB(80, 255, 120),
-    Warning = Color3.fromRGB(255, 200, 80),
-    Info = Color3.fromRGB(100, 180, 255)
+    SliderFill = Color3.fromRGB(190, 190, 190),
+    SliderBg = Color3.fromRGB(35, 35, 35),
+    BorderBlue = Color3.fromRGB(65, 105, 225),
 }
 
 local function Tween(obj, props, duration, style, direction)
@@ -166,21 +166,21 @@ else
     end
 end
     
-    -- Ubah ukuran dan style window:
     local Main = Instance.new("Frame")
-    Main.Size = UDim2.new(0, 520, 0, 340)  -- Lebih besar sedikit
-    Main.Position = UDim2.new(0.5, -260, 0.5, -170)
+    Main.Name = "Main"
+    Main.Size = UDim2.new(0, 460, 0, 290)
+    Main.Position = UDim2.new(0.5, -230, 0.5, -145)
     Main.BackgroundColor3 = Theme.Background
-    Main.BackgroundTransparency = 0  -- Hapus transparansi!
+    Main.BackgroundTransparency = 0.15
     Main.BorderSizePixel = 0
+    Main.ClipsDescendants = true
+    Main.Parent = ScreenGui
 
-    -- Border lebih tipis dan subtle:
     local MainBorder = Instance.new("UIStroke", Main)
-    MainBorder.Color = Color3.fromRGB(50, 50, 55)  -- Abu-abu gelap
-    MainBorder.Thickness = 1  -- Lebih tipis
-    MainBorder.Transparency = 0.3
-
-    Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 12)  -- Rounded lebih besar
+    MainBorder.Color = Theme.BorderBlue  -- Sky Blue
+    MainBorder.Thickness = 2
+    MainBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    --Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)--
     
     local Shadow = Instance.new("ImageLabel", Main)
     Shadow.Name = "Shadow"
@@ -195,22 +195,29 @@ end
     Shadow.ZIndex = -1
     
     local TopBar = Instance.new("Frame", Main)
-    TopBar.Size = UDim2.new(1, 0, 0, 50)  -- Lebih tinggi
+    TopBar.Name = "TopBar"
+    TopBar.Size = UDim2.new(1, 0, 0, 45)
     TopBar.BackgroundColor3 = Theme.TopBar
-    TopBar.BackgroundTransparency = 0  -- Solid
+    TopBar.BackgroundTransparency = 0.3
     TopBar.BorderSizePixel = 0
-
-    local TopBarCorner = Instance.new("UICorner", TopBar)
-    TopBarCorner.CornerRadius = UDim.new(0, 12)
     
+    local TopBarCorner = Instance.new("UICorner", TopBar)
+    TopBarCorner.CornerRadius = UDim.new(0, 10)
+    
+    local TopBarExtend = Instance.new("Frame", TopBar)
+    TopBarExtend.Size = UDim2.new(1, 0, 0, 10)
+    TopBarExtend.Position = UDim2.new(0, 0, 1, -10)
+    TopBarExtend.BackgroundColor3 = Theme.TopBar
+    TopBarExtend.BackgroundTransparency = 0.3
+    TopBarExtend.BorderSizePixel = 0
     
     local Title = Instance.new("TextLabel", TopBar)
-    Title.Size = UDim2.new(0, 250, 1, 0)
+    Title.Size = UDim2.new(0, 200, 1, 0)
     Title.Position = UDim2.new(0, 20, 0, 0)
     Title.BackgroundTransparency = 1
-    Title.Text = "👻 " .. WindowName
-    Title.TextColor3 = Theme.Accent  -- Putih bersih
-    Title.TextSize = 18  -- Sedikit lebih besar
+    Title.Text = "👻" .. WindowName
+    Title.TextColor3 = Theme.Accent
+    Title.TextSize = 17
     Title.Font = Enum.Font.GothamBold
     Title.TextXAlignment = Enum.TextXAlignment.Left
     
@@ -460,7 +467,7 @@ end)
     function Window:CreateTab(config)
         config = config or {}
         local TabName = config.Name or "Tab"
-        local TabIcon = config.Icon or "rbxassetid://7733964640" 
+        local TabIcon = config.Icon or ""
         
         local TabBtn = Instance.new("TextButton", Sidebar)
         TabBtn.Name = TabName
@@ -472,26 +479,28 @@ end)
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 7)
         
         
-        
-        local Icon = Instance.new("ImageLabel", TabBtn)
+        --[[
+        local Icon = Instance.new("TextLabel", TabBtn)
         Icon.Name = "Icon"
-        Icon.Size = UDim2.new(0, 20, 0, 20)
-        Icon.Position = UDim2.new(0, 10, 0.5, -10)
+        Icon.Size = UDim2.new(0, 28, 1, 0)
+        Icon.Position = UDim2.new(0, 8, 0, 0)
         Icon.BackgroundTransparency = 1
-        Icon.Image = TabIcon  -- Pakai asset ID
-        Icon.ImageColor3 = Theme.TextDim  -- Warna icon bisa diubah
-        Icon.ScaleType = Enum.ScaleType.Fit
-            
+        Icon.Text = TabIcon
+        Icon.TextColor3 = Theme.TextDim
+        Icon.TextSize = 16
+        Icon.Font = Enum.Font.Gotham
+        ]]--
         
         
         local Label = Instance.new("TextLabel", TabBtn)
-        Label.Size = UDim2.new(1, -50, 1, 0)  
-        Label.Position = UDim2.new(0, 45, 0, 0)  -- Geser ke kanan
+        Label.Name = "Label"
+        Label.Size = UDim2.new(1, -20, 1, 0)  
+        Label.Position = UDim2.new(0, 10, 0, 0) 
         Label.BackgroundTransparency = 1
         Label.Text = TabName
         Label.TextColor3 = Theme.TextDim
-        Label.TextSize = 14
-        Label.Font = Enum.Font.GothamSemibold  -- Semibold lebih bagus
+        Label.TextSize = 13
+        Label.Font = Enum.Font.GothamMedium
         Label.TextXAlignment = Enum.TextXAlignment.Left
         
         local TabContent = Instance.new("ScrollingFrame", Content)
@@ -534,15 +543,15 @@ end)
             for _, tab in pairs(Window.Tabs) do
                 tab.Content.Visible = false
                 Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
-                Tween(tab.Icon, {ImageColor3 = Theme.TextDim})  -- Icon jadi abu-abu
+               -- Tween(tab.Icon, {TextColor3 = Theme.TextDim})--
                 Tween(tab.Label, {TextColor3 = Theme.TextDim})
             end
             
             Window.CurrentTab = TabContent
             TabContent.Visible = true
-            Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})  -- Biru terang!
-            Tween(Icon, {ImageColor3 = Theme.Accent})  -- Icon jadi putih
-            Tween(Label, {TextColor3 = Theme.Accent})  -- Text jadi putih
+            Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
+            --Tween(Icon, {TextColor3 = Theme.Text})--
+            Tween(Label, {TextColor3 = Theme.Text})
         end
         
         TabBtn.MouseButton1Click:Connect(ActivateTab)
@@ -565,7 +574,7 @@ end)
         local Tab = {
             Button = TabBtn, 
             Content = TabContent,
-            Icon = Icon,
+            --Icon = Icon,--
             Label = Label
         }
         table.insert(Window.Tabs, Tab)
@@ -596,21 +605,15 @@ end)
             SectionPadding.PaddingRight = UDim.new(0, 12)
             
             local SectionTitle = Instance.new("TextLabel", Section)
-            SectionTitle.Size = UDim2.new(1, 0, 0, 28)  -- Lebih tinggi
+            SectionTitle.Name = "Title"
+            SectionTitle.Size = UDim2.new(1, 0, 0, 22)
             SectionTitle.BackgroundTransparency = 1
-            SectionTitle.Text = SectionName  -- Hapus icon "▸"
-            SectionTitle.TextColor3 = Theme.Accent  -- Putih bersih
-            SectionTitle.TextSize = 15
+            SectionTitle.Text = "▸ " .. SectionName
+            SectionTitle.TextColor3 = Theme.Accent
+            SectionTitle.TextSize = 14
             SectionTitle.Font = Enum.Font.GothamBold
             SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
-            SectionTitle.TextYAlignment = Enum.TextYAlignment.Center
             
-            local Separator = Instance.new("Frame", Section)
-            Separator.Size = UDim2.new(1, -10, 0, 1)
-            Separator.Position = UDim2.new(0, 5, 0, 30)
-            Separator.BackgroundColor3 = Theme.ElementBorder
-            Separator.BorderSizePixel = 0
-
             local Container = Instance.new("Frame", Section)
             Container.Name = "Container"
             Container.Size = UDim2.new(1, 0, 0, 0)
@@ -722,23 +725,18 @@ end)
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local ToggleBg = Instance.new("Frame", Frame)
-                ToggleBg.Size = UDim2.new(0, 50, 0, 26)  -- Lebih besar
-                ToggleBg.Position = UDim2.new(1, -58, 0.5, -13)
+                ToggleBg.Size = UDim2.new(0, 44, 0, 22)
+                ToggleBg.Position = UDim2.new(1, -52, 0.5, -11)
                 ToggleBg.BackgroundColor3 = CurrentValue and Theme.ToggleOn or Theme.ToggleOff
                 ToggleBg.BorderSizePixel = 0
                 Instance.new("UICorner", ToggleBg).CornerRadius = UDim.new(1, 0)
                 
                 local ToggleCircle = Instance.new("Frame", ToggleBg)
-                ToggleCircle.Size = UDim2.new(0, 22, 0, 22)  -- Lebih besar
-                ToggleCircle.Position = CurrentValue and UDim2.new(1, -24, 0.5, -11) or UDim2.new(0, 2, 0.5, -11)
+                ToggleCircle.Size = UDim2.new(0, 18, 0, 18)
+                ToggleCircle.Position = CurrentValue and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)
                 ToggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 ToggleCircle.BorderSizePixel = 0
                 Instance.new("UICorner", ToggleCircle).CornerRadius = UDim.new(1, 0)
-
-                local CircleShadow = Instance.new("UIStroke", ToggleCircle)
-                CircleShadow.Color = Color3.fromRGB(0, 0, 0)
-                CircleShadow.Thickness = 2
-                CircleShadow.Transparency = 0.7
                 
                 local Interact = Instance.new("TextButton", Frame)
                 Interact.Size = UDim2.new(1, 0, 1, 0)
@@ -932,7 +930,7 @@ end)
                 -- ✅ FIX: Tambah pcall untuk semua operasi
                 local success, Frame = pcall(function()
                     local frame = Instance.new("Frame")
-                    frame.Size = UDim2.new(1, 0, 0, 65)
+                    frame.Size = UDim2.new(1, 0, 0, 40)
                     frame.BackgroundColor3 = Theme.ElementBg
                     frame.BackgroundTransparency = 0.3
                     frame.BorderSizePixel = 0
@@ -956,8 +954,8 @@ end)
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)
-                NameLabel.Size = UDim2.new(1, -30, 0, 22)
-                NameLabel.Position = UDim2.new(0, 15, 0, 8)
+                NameLabel.Size = UDim2.new(1, -160, 1, 0)
+                NameLabel.Position = UDim2.new(0, 15, 0, 0)
                 NameLabel.BackgroundTransparency = 1
                 NameLabel.Text = Name
                 NameLabel.TextColor3 = Theme.Text
@@ -966,8 +964,8 @@ end)
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local InputBox = Instance.new("TextBox", Frame)
-                InputBox.Size = UDim2.new(1, -30, 0, 28)
-                InputBox.Position = UDim2.new(0, 15, 0, 32)
+                InputBox.Size = UDim2.new(0, 140, 0, 28)
+                InputBox.Position = UDim2.new(1, -155, 0.5, -14)
                 InputBox.BackgroundColor3 = Theme.SliderBg
                 InputBox.Text = ""
                 InputBox.PlaceholderText = PlaceholderText
@@ -1111,12 +1109,12 @@ end)
                 Arrow.BackgroundTransparency = 1
                 Arrow.Text = "▼"
                 Arrow.TextColor3 = Theme.TextDim
-                Arrow.TextSize = 18  -- Lebih besar
-                Arrow.Font = Enum.Font.GothamBold
+                Arrow.TextSize = 10
+                Arrow.Font = Enum.Font.Gotham
                 
                 local OptionsFrame = Instance.new("Frame", Frame)
-                OptionsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)  -- Lebih gelap
-                OptionsFrame.BackgroundTransparency = 0.05 
+                OptionsFrame.Size = UDim2.new(1, 0, 0, 0)
+                OptionsFrame.Position = UDim2.new(0, 0, 0, 38)
                 OptionsFrame.BackgroundTransparency = 1
                 
                 local OptionsLayout = Instance.new("UIListLayout", OptionsFrame)
@@ -1147,8 +1145,7 @@ end)
                     Instance.new("UICorner", OptBtn).CornerRadius = UDim.new(0, 5)
                     
                     OptBtn.MouseEnter:Connect(function()
-                        Tween(OptBtn, {BackgroundColor3 = Theme.Primary}, 0.15)  -- Biru
-                        Tween(OptBtn, {TextColor3 = Color3.fromRGB(255, 255, 255)}, 0.15)
+                        Tween(OptBtn, {BackgroundColor3 = Theme.ElementBgHover})
                     end)
                     
                     OptBtn.MouseLeave:Connect(function()
@@ -1454,8 +1451,8 @@ function SectionObj:CreateCollapsible(config)
         Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
         
         local NameLabel = Instance.new("TextLabel", Frame)
-        NameLabel.Size = UDim2.new(1, -30, 0, 22)
-        NameLabel.Position = UDim2.new(0, 15, 0, 8)
+        NameLabel.Size = UDim2.new(1, -160, 1, 0)
+        NameLabel.Position = UDim2.new(0, 15, 0, 0)
         NameLabel.BackgroundTransparency = 1
         NameLabel.Text = Name
         NameLabel.TextColor3 = Theme.Text
@@ -1464,8 +1461,8 @@ function SectionObj:CreateCollapsible(config)
         NameLabel.TextXAlignment = Enum.TextXAlignment.Left
         
         local InputBox = Instance.new("TextBox", Frame)
-        InputBox.Size = UDim2.new(1, -30, 0, 28)
-        InputBox.Position = UDim2.new(0, 15, 0, 32)
+        InputBox.Size = UDim2.new(0, 140, 0, 28)
+        InputBox.Position = UDim2.new(1, -155, 0.5, -14)
         InputBox.BackgroundColor3 = Theme.SliderBg
         InputBox.Text = ""
         InputBox.PlaceholderText = PlaceholderText

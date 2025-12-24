@@ -546,34 +546,36 @@ end)
             end
         end)
         
-        local function ActivateTab()
-            for _, tab in pairs(Window.Tabs) do
-                tab.Content.Visible = false
-                Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
-                Tween(tab.Label, {TextColor3 = Theme.TextDim})
+            local function ActivateTab()
+                for _, tab in pairs(Window.Tabs) do
+                    tab.Content.Visible = false
+                    Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
+                    Tween(tab.Label, {TextColor3 = Theme.TextDim})
+                    
+                    -- ✅ TAMBAHKAN INI
+                    if tab.Icon and tab.Icon.Visible then
+                        Tween(tab.Icon, {ImageColor3 = Theme.TextDim})
+                    end
+                    
+                    if tab.Button:FindFirstChild("ActiveIndicator") then
+                        tab.Button.ActiveIndicator.Visible = false
+                    end
+                end
+                
+                Window.CurrentTab = TabContent
+                TabContent.Visible = true
+                Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
+                Tween(Label, {TextColor3 = Theme.Text})
+                
                 -- ✅ TAMBAHKAN INI
-                if tab.Icon then
-                    Tween(tab.Icon, {ImageColor3 = Theme.TextDim})
+                if Icon and Icon.Visible then
+                    Tween(Icon, {ImageColor3 = Theme.Text})
                 end
-                -- Sembunyikan indicator
-                if tab.Button:FindFirstChild("ActiveIndicator") then
-                    tab.Button.ActiveIndicator.Visible = false
+                
+                if TabBtn:FindFirstChild("ActiveIndicator") then
+                    TabBtn.ActiveIndicator.Visible = true
                 end
             end
-            
-            Window.CurrentTab = TabContent
-            TabContent.Visible = true
-            Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
-            Tween(Label, {TextColor3 = Theme.Text})
-            -- ✅ TAMBAHKAN INI
-            if Icon and Icon.Visible then
-                Tween(Icon, {ImageColor3 = Theme.Text})
-            end
-            -- Tampilkan indicator
-            if TabBtn:FindFirstChild("ActiveIndicator") then
-                TabBtn.ActiveIndicator.Visible = true
-            end
-        end
         
         TabBtn.MouseButton1Click:Connect(ActivateTab)
         

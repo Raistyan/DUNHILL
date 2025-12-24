@@ -37,3 +37,21 @@ local function DisableCutsceneSkip()
 
     print("🎬 Cutscene Enabled")
 end
+
+-- ==============================
+-- 🔘 TOGGLE UI
+-- ==============================
+
+FeatureSection:CreateToggle({
+    Name = "Skip Legendary Cutscene",
+    CurrentValue = false,
+    Callback = function(state)
+        disableCutscene = state
+
+        if state then
+            EnableCutsceneSkip()
+        else
+            DisableCutsceneSkip()
+        end
+    end
+})

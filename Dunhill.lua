@@ -139,32 +139,33 @@ function Dunhill:CreateWindow(config)
     ScreenGui.ResetOnSpawn = false
     
 -- ✅ FIX: Parent detection yang lebih aman
-local success, parent = pcall(function()
-    if gethui then
-        return gethui()
-    elseif syn and syn.protect_gui then
-        local gui = Instance.new("ScreenGui")
-        syn.protect_gui(gui)
-        return gui.Parent or CoreGui
-    else
-        return CoreGui
-    end
-end)
-
-if success and parent then
-    ScreenGui.Parent = parent
-else
-    if LocalPlayer then
-        local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
-        if playerGui then
-            ScreenGui.Parent = playerGui
-        else
-            ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui", 5) or CoreGui
+local function getValidParent()
+    -- Try gethui first
+    local success, result = pcall(function()
+        if gethui then return gethui() end
+    end)
+    if success and result then return result end
+    
+    -- Try syn protect
+    success, result = pcall(function()
+        if syn and syn.protect_gui then
+            local gui = Instance.new("ScreenGui")
+            syn.protect_gui(gui)
+            return gui.Parent or CoreGui
         end
-    else
-        ScreenGui.Parent = CoreGui
+    end)
+    if success and result then return result end
+    
+    -- Fallback PlayerGui
+    if LocalPlayer then
+        local playerGui = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+        if playerGui then return playerGui end
     end
+    
+    -- Last resort
+    return CoreGui
 end
+ScreenGui.Parent = getValidParent()
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"
@@ -404,7 +405,7 @@ end)
             
             -- ✅ FIX: Multiple layer protection
             task.spawn(function()
-                task.wait(1.5) -- Tunggu lebih lama untuk semua element ready
+                task.wait(2.5) -- Tunggu lebih lama untuk semua element ready
                 
                 local success = pcall(function()
                     if not isfile or not readfile then 
@@ -436,21 +437,18 @@ end)
                     end
                     
                     -- ✅ FIX: Load dengan delay dan validasi
-                    for flag, value in pairs(decoded) do
-                        task.spawn(function()
-                            task.wait(0.1) -- Delay per flag
-                            
-                            if Dunhill.Flags[flag] then
+                        for flag, value in pairs(decoded) do
+                            task.spawn(function()
+                                task.wait(0.1)
+                                
+                                if not Dunhill.Flags[flag] then return end
+                                if not Dunhill.Flags[flag].SetValue then return end
+                                
                                 pcall(function()
-                                    if Dunhill.Flags[flag].SetValue then
-                                        Dunhill.Flags[flag]:SetValue(value)
-                                    elseif type(Dunhill.Flags[flag]) == "table" then
-                                        Dunhill.Flags[flag].CurrentValue = value
-                                    end
+                                    Dunhill.Flags[flag]:SetValue(value)
                                 end)
-                            end
-                        end)
-                    end
+                            end)
+                        end
                     
                     print("[Dunhill] Config loaded successfully")
                 end)
@@ -458,7 +456,7 @@ end)
                 if not success then
                     warn("[Dunhill] Failed to load config")
                 end
-            end)
+            end
         end
     
     Window.SaveConfiguration = SaveConfig
@@ -581,18 +579,17 @@ end)
         
         -- ✅ FIX: Aktifkan tab pertama dengan delay lebih panjang
 -- ✅ FIX: Aktifkan tab pertama dengan delay lebih panjang dan validasi
-        if #Window.Tabs == 0 then
-            task.spawn(function()
-                task.wait(0.8) -- Delay lebih lama
-                
-                pcall(function()
-                    if TabContent and TabContent.Parent then
+            if #Window.Tabs == 0 then
+                -- Tunggu semua UI element fully rendered
+                task.spawn(function()
+                    task.wait(1.2) -- Delay lebih panjang & konsisten
+                    
+                    -- Double check masih valid
+                    if TabContent and TabContent.Parent and TabBtn.Parent then
                         ActivateTab()
-                        print("[Dunhill] First tab activated")
                     end
                 end)
-            end)
-        end
+            end
         
         local Tab = {
             Button = TabBtn, 
@@ -953,13 +950,14 @@ end)
                 -- ✅ FIX: Tambah pcall untuk semua operasi
                 local success, Frame = pcall(function()
                     local frame = Instance.new("Frame")
-                    frame.Size = UDim2.new(1, 0, 0, 40)
+                    frame.Size = UDim2.new(1, 0, 0, 65)  -- ✅ FIXED
                     frame.BackgroundColor3 = Theme.ElementBg
                     frame.BackgroundTransparency = 0.3
                     frame.BorderSizePixel = 0
                     frame.Parent = Container
                     return frame
                 end)
+
                 
                 if not success then
                     warn("[Dunhill] Failed to create Input frame")
@@ -1182,11 +1180,13 @@ end)
                         UpdateSize()
                         
                         -- ✅ TAMBAHKAN: Auto scroll setelah pilih
-                        task.spawn(function()
-                            task.wait(0.15)
-                            local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
-                            TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
-                        end)
+                            task.spawn(function()
+                                pcall(function()  -- ✅ TAMBAHIN INI
+                                    task.wait(0.15)
+                                    local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
+                                    TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
+                                end)  -- ✅ TAMBAHIN INI
+                            end)
                         
                         if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
                         pcall(Callback, option)
@@ -1461,7 +1461,7 @@ function SectionObj:CreateCollapsible(config)
         local CurrentValue = ""
         
         local Frame = Instance.new("Frame", ContentContainer)
-        Frame.Size = UDim2.new(1, 0, 0, 65)
+        Frame.Size = UDim2.new(1, 0, 0, 40)
         Frame.BackgroundColor3 = Theme.ElementBg
         Frame.BackgroundTransparency = 0.3
         Frame.BorderSizePixel = 0
@@ -1655,7 +1655,7 @@ end
                 local Stroke = Instance.new("UIStroke", Frame)
                 Stroke.Color = Theme.ElementBorder
                 Stroke.Thickness = 1
-                SectionStroke.Transparency = 0.4
+                Stroke.Transparency = 0.4
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local NameLabel = Instance.new("TextLabel", Frame)

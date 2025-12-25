@@ -505,7 +505,7 @@ end)
         TabContent.Visible = false
         TabContent.ClipsDescendants = true
         TabContent.BackgroundColor3 = Theme.Background
-        
+
         local Layout = Instance.new("UIListLayout", TabContent)
         Layout.Padding = UDim.new(0, 10)
         Layout.SortOrder = Enum.SortOrder.LayoutOrder

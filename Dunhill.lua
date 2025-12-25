@@ -247,34 +247,16 @@ end
         
     local MinimizedIcon = Instance.new("ImageButton", ScreenGui)
     MinimizedIcon.Name = "MinIcon"
-    MinimizedIcon.Size = UDim2.new(0, 65, 0, 65)
+    MinimizedIcon.Size = UDim2.new(0, 50, 0, 50)  
     MinimizedIcon.Position = UDim2.new(0, 20, 0, 20)
-    MinimizedIcon.BackgroundColor3 = Theme.TopBar
-    MinimizedIcon.Image = "rbxassetid://89143179359530"  -- Ganti dengan ID kamu
+    MinimizedIcon.BackgroundTransparency = 1 
+    MinimizedIcon.Image = "rbxassetid://76165577061521"  -- Logo Mach kamu
     MinimizedIcon.ScaleType = Enum.ScaleType.Fit
-    -- HAPUS baris ImageColor3 atau set ke putih
-    MinimizedIcon.ImageTransparency = 0  -- Gambar full visible
+    MinimizedIcon.ImageTransparency = 0
     MinimizedIcon.AutoButtonColor = false
     MinimizedIcon.BorderSizePixel = 0
     MinimizedIcon.Visible = false
-    Instance.new("UICorner", MinimizedIcon).CornerRadius = UDim.new(1, 0)
-
-    local MinIconShadow = Instance.new("ImageLabel", MinimizedIcon)
-    MinIconShadow.Size = UDim2.new(1, 30, 1, 30)
-    MinIconShadow.Position = UDim2.new(0, -15, 0, -15)
-    MinIconShadow.BackgroundTransparency = 1
-    MinIconShadow.Image = "rbxassetid://5554236805"
-    MinIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    MinIconShadow.ImageTransparency = 0.4
-    MinIconShadow.ScaleType = Enum.ScaleType.Slice
-    MinIconShadow.SliceCenter = Rect.new(23, 23, 277, 277)
-    MinIconShadow.ZIndex = -1
-
-    local IconPadding = Instance.new("UIPadding", MinimizedIcon)
-    IconPadding.PaddingTop = UDim.new(0, 10)
-    IconPadding.PaddingBottom = UDim.new(0, 10)
-    IconPadding.PaddingLeft = UDim.new(0, 10)
-    IconPadding.PaddingRight = UDim.new(0, 10)
+    
     MakeDraggable(MinimizedIcon, MinimizedIcon)
     
     local Content = Instance.new("Frame", Main)
@@ -326,7 +308,7 @@ MinBtn.MouseButton1Click:Connect(function()
     Main.Visible = false
     MinimizedIcon.Visible = true
     MinimizedIcon.Size = UDim2.new(0, 0, 0, 0)
-    Tween(MinimizedIcon, {Size = UDim2.new(0, 65, 0, 65)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    Tween(MinimizedIcon, {Size = UDim2.new(0, 50, 0, 50)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 end)
 
         local isDraggingIcon = false

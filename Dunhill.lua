@@ -221,7 +221,7 @@ end
 
     local TitleText = Instance.new("TextLabel", TopBar)
     TitleText.Size = UDim2.new(0, 150, 1, 0)
-    TitleText.Position = UDim2.new(0, 50, 0, 0)  -- Di sebelah kanan logo
+    TitleText.Position = UDim2.new(0, 60, 0, 0)  -- Di sebelah kanan logo
     TitleText.BackgroundTransparency = 1
     TitleText.Text = WindowName
     TitleText.TextColor3 = Theme.Accent

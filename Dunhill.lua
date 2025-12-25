@@ -212,13 +212,22 @@ end
     TopBarExtend.BorderSizePixel = 0
     
     local Title = Instance.new("ImageLabel", TopBar)
-    Title.Size = UDim2.new(0, 30, 0, 30)
-    Title.Position = UDim2.new(0, 15, 0.5, -17.5)
+    Title.Size = UDim2.new(0, 30, 0, 30)  -- Ukuran logo
+    Title.Position = UDim2.new(0, 15, 0.5, -15)  -- Posisi kiri atas
     Title.BackgroundTransparency = 1
-    Title.Image = "rbxassetid://101311528770915"
+    Title.Image = "rbxassetid://101311528770915"  -- Logo Mach kamu (sama kayak minimize icon)
     Title.ScaleType = Enum.ScaleType.Fit
     Title.ImageTransparency = 0
-    Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 6)
+
+    local TitleText = Instance.new("TextLabel", TopBar)
+    TitleText.Size = UDim2.new(0, 150, 1, 0)
+    TitleText.Position = UDim2.new(0, 50, 0, 0)  -- Di sebelah kanan logo
+    TitleText.BackgroundTransparency = 1
+    TitleText.Text = WindowName
+    TitleText.TextColor3 = Theme.Accent
+    TitleText.TextSize = 17
+    TitleText.Font = Enum.Font.GothamBold
+    TitleText.TextXAlignment = Enum.TextXAlignment.Left
     
     local CloseBtn = Instance.new("TextButton", TopBar)
     CloseBtn.Size = UDim2.new(0, 35, 0, 35)

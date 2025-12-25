@@ -171,7 +171,7 @@ end
     Main.Size = UDim2.new(0, 550, 0, 290)
     Main.Position = UDim2.new(0.5, -275, 0.5, -175)
     Main.BackgroundColor3 = Theme.Background
-    Main.BackgroundTransparency = 0.15
+    Main.BackgroundTransparency = 1
     Main.BorderSizePixel = 0
     Main.ClipsDescendants = true
     Main.Parent = ScreenGui
@@ -198,7 +198,7 @@ end
     TopBar.Name = "TopBar"
     TopBar.Size = UDim2.new(1, 0, 0, 45)
     TopBar.BackgroundColor3 = Theme.TopBar
-    TopBar.BackgroundTransparency = 0.15
+    TopBar.BackgroundTransparency = 1
     TopBar.BorderSizePixel = 0
     
     local TopBarCorner = Instance.new("UICorner", TopBar)
@@ -208,7 +208,7 @@ end
     TopBarExtend.Size = UDim2.new(1, 0, 0, 10)
     TopBarExtend.Position = UDim2.new(0, 0, 1, -10)
     TopBarExtend.BackgroundColor3 = Theme.TopBar
-    TopBarExtend.BackgroundTransparency = 0.15
+    TopBarExtend.BackgroundTransparency = 1
     TopBarExtend.BorderSizePixel = 0
     
     local Title = Instance.new("ImageLabel", TopBar)
@@ -269,7 +269,7 @@ end
     Sidebar.Size = UDim2.new(0, 135, 1, -15)
     Sidebar.Position = UDim2.new(0, 10, 0, 10)
     Sidebar.BackgroundColor3 = Theme.Sidebar
-    Sidebar.BackgroundTransparency = 0.15
+    Sidebar.BackgroundTransparency = 1
     Sidebar.BorderSizePixel = 0
     Sidebar.ScrollBarThickness = 3
     Sidebar.ScrollBarImageColor3 = Theme.Primary
@@ -496,7 +496,7 @@ end)
         TabContent.Size = UDim2.new(1, -160, 1, -15)
         TabContent.Position = UDim2.new(0, 150, 0, 10)
         TabContent.BackgroundColor3 = Theme.Background
-        TabContent.BackgroundTransparency = 0.15
+        TabContent.BackgroundTransparency = 1
         TabContent.BorderSizePixel = 0
         TabContent.ScrollBarThickness = 3
         TabContent.ScrollBarImageColor3 = Theme.Primary
@@ -593,7 +593,7 @@ end)
             Section.Size = UDim2.new(1, 0, 0, 0)
             Section.AutomaticSize = Enum.AutomaticSize.Y
             Section.BackgroundColor3 = Theme.BackgroundSecondary
-            Section.BackgroundTransparency = 0.4
+            Section.BackgroundTransparency = 1
             Section.BorderSizePixel = 0
             Instance.new("UICorner", Section).CornerRadius = UDim.new(0, 8)
             
@@ -660,7 +660,7 @@ end)
                 local Btn = Instance.new("TextButton", Container)
                 Btn.Size = UDim2.new(1, 0, 0, 38)
                 Btn.BackgroundColor3 = Theme.ElementBg
-                Btn.BackgroundTransparency = 0.3
+                Btn.BackgroundTransparency = 1
                 Btn.Text = Name
                 Btn.TextColor3 = Theme.Text
                 Btn.TextSize = 14
@@ -709,7 +709,7 @@ end)
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.3
+                Frame.BackgroundTransparency = 1
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
@@ -798,7 +798,7 @@ end)
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 54)
                 Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.3
+                Frame.BackgroundTransparency = 1
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
@@ -937,7 +937,7 @@ end)
                     local frame = Instance.new("Frame")
                     frame.Size = UDim2.new(1, 0, 0, 40)
                     frame.BackgroundColor3 = Theme.ElementBg
-                    frame.BackgroundTransparency = 0.3
+                    frame.BackgroundTransparency = 1
                     frame.BorderSizePixel = 0
                     frame.Parent = Container
                     return frame
@@ -1082,7 +1082,7 @@ end)
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.3
+                Frame.BackgroundTransparency = 1
                 Frame.BorderSizePixel = 0
                 Frame.ClipsDescendants = true
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
@@ -1248,7 +1248,7 @@ function SectionObj:CreateCollapsible(config)
     local CollapsibleFrame = Instance.new("Frame", Container)
     CollapsibleFrame.Size = UDim2.new(1, 0, 0, 38)
     CollapsibleFrame.BackgroundColor3 = Theme.ElementBg
-    CollapsibleFrame.BackgroundTransparency = 0.3
+    CollapsibleFrame.BackgroundTransparency = 1
     CollapsibleFrame.BorderSizePixel = 0
     CollapsibleFrame.ClipsDescendants = true
     Instance.new("UICorner", CollapsibleFrame).CornerRadius = UDim.new(0, 7)
@@ -1361,7 +1361,7 @@ function SectionObj:CreateCollapsible(config)
         local Frame = Instance.new("Frame", ContentContainer)
         Frame.Size = UDim2.new(1, 0, 0, 38)
         Frame.BackgroundColor3 = Theme.ElementBg
-        Frame.BackgroundTransparency = 0.3
+        Frame.BackgroundTransparency = 1
         Frame.BorderSizePixel = 0
         Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
         
@@ -1445,7 +1445,7 @@ function SectionObj:CreateCollapsible(config)
         local Frame = Instance.new("Frame", ContentContainer)
         Frame.Size = UDim2.new(1, 0, 0, 65)
         Frame.BackgroundColor3 = Theme.ElementBg
-        Frame.BackgroundTransparency = 0.3
+        Frame.BackgroundTransparency = 1
         Frame.BorderSizePixel = 0
         Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
         
@@ -1544,7 +1544,7 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.3
+                Frame.BackgroundTransparency = 1
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 

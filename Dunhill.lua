@@ -256,7 +256,7 @@ end
     MinimizedIcon.AutoButtonColor = false
     MinimizedIcon.BorderSizePixel = 0
     MinimizedIcon.Visible = false
-    
+    Instance.new("UICorner", MinimizedIcon).CornerRadius = UDim.new(0, 8)
     MakeDraggable(MinimizedIcon, MinimizedIcon)
     
     local Content = Instance.new("Frame", Main)

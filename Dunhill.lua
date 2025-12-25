@@ -138,47 +138,45 @@ function Dunhill:CreateWindow(config)
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
     
--- ✅ FIX: Parent detection yang lebih aman
--- ✅ FIX: Simplified parent detection
-    local function getValidParent()
-        -- Coba gethui dulu
-        if gethui then
-            local success, gui = pcall(gethui)
-            if success and gui then 
-                return gui 
+    -- ✅ FIXED: Ultra-safe parent setting
+        do
+            local function trySetParent()
+                -- Method 1: gethui
+                if gethui then
+                    local ok, result = pcall(gethui)
+                    if ok and result then
+                        pcall(function() ScreenGui.Parent = result end)
+                        if ScreenGui.Parent then return true end
+                    end
+                end
+                
+                -- Method 2: syn protect
+                if syn and syn.protect_gui then
+                    pcall(syn.protect_gui, ScreenGui)
+                end
+                
+                -- Method 3: PlayerGui
+                if LocalPlayer then
+                    local ok, pg = pcall(function()
+                        return LocalPlayer:WaitForChild("PlayerGui", 2)
+                    end)
+                    if ok and pg then
+                        pcall(function() ScreenGui.Parent = pg end)
+                        if ScreenGui.Parent then return true end
+                    end
+                end
+                
+                -- Method 4: CoreGui (always works)
+                pcall(function() ScreenGui.Parent = CoreGui end)
+            end
+            
+            trySetParent()
+            
+            -- Safety check
+            if not ScreenGui.Parent then
+                ScreenGui.Parent = CoreGui
             end
         end
-        
-        -- Coba syn protect
-        if syn and syn.protect_gui then
-            local success = pcall(function()
-                syn.protect_gui(ScreenGui)
-            end)
-        end
-        
-        -- Coba PlayerGui
-        if LocalPlayer then
-            local success, playerGui = pcall(function()
-                return LocalPlayer:FindFirstChildOfClass("PlayerGui")
-            end)
-            if success and playerGui then 
-                return playerGui 
-            end
-        end
-        
-        -- Fallback ke CoreGui
-        return CoreGui
-    end
-
-    -- Set parent dengan protection
-    local success = pcall(function()
-        ScreenGui.Parent = getValidParent()
-    end)
-
-    if not success then
-        -- Jika gagal, langsung ke CoreGui
-        ScreenGui.Parent = CoreGui
-    end
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"

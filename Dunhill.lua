@@ -198,7 +198,7 @@ end
     TopBar.Name = "TopBar"
     TopBar.Size = UDim2.new(1, 0, 0, 45)
     TopBar.BackgroundColor3 = Theme.TopBar
-    TopBar.BackgroundTransparency = 0.3
+    TopBar.BackgroundTransparency = 0.15
     TopBar.BorderSizePixel = 0
     
     local TopBarCorner = Instance.new("UICorner", TopBar)
@@ -208,18 +208,17 @@ end
     TopBarExtend.Size = UDim2.new(1, 0, 0, 10)
     TopBarExtend.Position = UDim2.new(0, 0, 1, -10)
     TopBarExtend.BackgroundColor3 = Theme.TopBar
-    TopBarExtend.BackgroundTransparency = 0.3
+    TopBarExtend.BackgroundTransparency = 0.15
     TopBarExtend.BorderSizePixel = 0
     
-    local Title = Instance.new("TextLabel", TopBar)
-    Title.Size = UDim2.new(0, 200, 1, 0)
-    Title.Position = UDim2.new(0, 20, 0, 0)
+    local Title = Instance.new("ImageLabel", TopBar)
+    Title.Size = UDim2.new(0, 35, 0, 35)
+    Title.Position = UDim2.new(0, 15, 0.5, -17.5)
     Title.BackgroundTransparency = 1
-    Title.Text = "👻" .. WindowName
-    Title.TextColor3 = Theme.Accent
-    Title.TextSize = 17
-    Title.Font = Enum.Font.GothamBold
-    Title.TextXAlignment = Enum.TextXAlignment.Left
+    Title.Image = "rbxassetid://101311528770915"
+    Title.ScaleType = Enum.ScaleType.Fit
+    Title.ImageTransparency = 0
+    Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 6)
     
     local CloseBtn = Instance.new("TextButton", TopBar)
     CloseBtn.Size = UDim2.new(0, 35, 0, 35)
@@ -270,7 +269,7 @@ end
     Sidebar.Size = UDim2.new(0, 135, 1, -15)
     Sidebar.Position = UDim2.new(0, 10, 0, 10)
     Sidebar.BackgroundColor3 = Theme.Sidebar
-    Sidebar.BackgroundTransparency = 0.3
+    Sidebar.BackgroundTransparency = 0.15
     Sidebar.BorderSizePixel = 0
     Sidebar.ScrollBarThickness = 3
     Sidebar.ScrollBarImageColor3 = Theme.Primary
@@ -497,7 +496,7 @@ end)
         TabContent.Size = UDim2.new(1, -160, 1, -15)
         TabContent.Position = UDim2.new(0, 150, 0, 10)
         TabContent.BackgroundColor3 = Theme.Background
-        TabContent.BackgroundTransparency = 1
+        TabContent.BackgroundTransparency = 0.15
         TabContent.BorderSizePixel = 0
         TabContent.ScrollBarThickness = 3
         TabContent.ScrollBarImageColor3 = Theme.Primary
@@ -505,6 +504,7 @@ end)
         TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
         TabContent.Visible = false
         TabContent.ClipsDescendants = true
+        TabContent.BackgroundColor3 = Theme.Background
         
         local Layout = Instance.new("UIListLayout", TabContent)
         Layout.Padding = UDim.new(0, 10)

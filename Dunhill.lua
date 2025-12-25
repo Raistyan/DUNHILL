@@ -139,33 +139,46 @@ function Dunhill:CreateWindow(config)
     ScreenGui.ResetOnSpawn = false
     
 -- ✅ FIX: Parent detection yang lebih aman
-local function getValidParent()
-    -- Try gethui first
-    local success, result = pcall(function()
-        if gethui then return gethui() end
-    end)
-    if success and result then return result end
-    
-    -- Try syn protect
-    success, result = pcall(function()
-        if syn and syn.protect_gui then
-            local gui = Instance.new("ScreenGui")
-            syn.protect_gui(gui)
-            return gui.Parent or CoreGui
+-- ✅ FIX: Simplified parent detection
+    local function getValidParent()
+        -- Coba gethui dulu
+        if gethui then
+            local success, gui = pcall(gethui)
+            if success and gui then 
+                return gui 
+            end
         end
-    end)
-    if success and result then return result end
-    
-    -- Fallback PlayerGui
-    if LocalPlayer then
-        local playerGui = LocalPlayer:FindFirstChildOfClass("PlayerGui")
-        if playerGui then return playerGui end
+        
+        -- Coba syn protect
+        if syn and syn.protect_gui then
+            local success = pcall(function()
+                syn.protect_gui(ScreenGui)
+            end)
+        end
+        
+        -- Coba PlayerGui
+        if LocalPlayer then
+            local success, playerGui = pcall(function()
+                return LocalPlayer:FindFirstChildOfClass("PlayerGui")
+            end)
+            if success and playerGui then 
+                return playerGui 
+            end
+        end
+        
+        -- Fallback ke CoreGui
+        return CoreGui
     end
-    
-    -- Last resort
-    return CoreGui
-end
-ScreenGui.Parent = getValidParent()
+
+    -- Set parent dengan protection
+    local success = pcall(function()
+        ScreenGui.Parent = getValidParent()
+    end)
+
+    if not success then
+        -- Jika gagal, langsung ke CoreGui
+        ScreenGui.Parent = CoreGui
+    end
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"

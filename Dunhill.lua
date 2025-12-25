@@ -138,45 +138,37 @@ function Dunhill:CreateWindow(config)
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
     
-    -- ✅ FIXED: Ultra-safe parent setting
-        do
-            local function trySetParent()
-                -- Method 1: gethui
-                if gethui then
-                    local ok, result = pcall(gethui)
-                    if ok and result then
-                        pcall(function() ScreenGui.Parent = result end)
-                        if ScreenGui.Parent then return true end
-                    end
-                end
-                
-                -- Method 2: syn protect
-                if syn and syn.protect_gui then
-                    pcall(syn.protect_gui, ScreenGui)
-                end
-                
-                -- Method 3: PlayerGui
-                if LocalPlayer then
-                    local ok, pg = pcall(function()
-                        return LocalPlayer:WaitForChild("PlayerGui", 2)
-                    end)
-                    if ok and pg then
-                        pcall(function() ScreenGui.Parent = pg end)
-                        if ScreenGui.Parent then return true end
-                    end
-                end
-                
-                -- Method 4: CoreGui (always works)
-                pcall(function() ScreenGui.Parent = CoreGui end)
-            end
-            
-            trySetParent()
-            
-            -- Safety check
-            if not ScreenGui.Parent then
-                ScreenGui.Parent = CoreGui
+    -- ✅ SIMPLE FIX: Direct parent setting
+        local parentSet = false
+
+        -- Try gethui
+        if gethui then
+            local s, gui = pcall(gethui)
+            if s and gui then
+                pcall(function() ScreenGui.Parent = gui end)
+                parentSet = ScreenGui.Parent ~= nil
             end
         end
+
+        -- Try syn protect
+        if not parentSet and syn and syn.protect_gui then
+            pcall(syn.protect_gui, ScreenGui)
+        end
+
+        -- Try PlayerGui
+        if not parentSet and LocalPlayer then
+            local s, pg = pcall(function() return LocalPlayer:FindFirstChildOfClass("PlayerGui") end)
+            if s and pg then
+                pcall(function() ScreenGui.Parent = pg end)
+                parentSet = ScreenGui.Parent ~= nil
+            end
+        end
+
+        -- Fallback CoreGui
+        if not parentSet then
+            ScreenGui.Parent = CoreGui
+        end
+
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"

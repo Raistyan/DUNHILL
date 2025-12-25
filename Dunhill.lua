@@ -250,7 +250,7 @@ end
     MinimizedIcon.Size = UDim2.new(0, 50, 0, 50)  
     MinimizedIcon.Position = UDim2.new(0, 20, 0, 20)
     MinimizedIcon.BackgroundTransparency = 1 
-    MinimizedIcon.Image = "rbxassetid://76165577061521"  -- Logo Mach kamu
+    MinimizedIcon.Image = "rbxassetid://101311528770915"  -- Logo Mach kamu
     MinimizedIcon.ScaleType = Enum.ScaleType.Fit
     MinimizedIcon.ImageTransparency = 0
     MinimizedIcon.AutoButtonColor = false

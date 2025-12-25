@@ -168,8 +168,8 @@ end
     
     local Main = Instance.new("Frame")
     Main.Name = "Main"
-    Main.Size = UDim2.new(0, 550, 0, 290)
-    Main.Position = UDim2.new(0.5, -275, 0.5, -175)
+    Main.Size = UDim2.new(0, 500, 0, 290)
+    Main.Position = UDim2.new(0.5, -250, 0.5, -175)
     Main.BackgroundColor3 = Theme.Background
     Main.BackgroundTransparency = 0.15
     Main.BorderSizePixel = 0
@@ -180,7 +180,7 @@ end
     MainBorder.Color = Theme.BorderBlue  -- Sky Blue
     MainBorder.Thickness = 2
     MainBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    --Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)--
+    Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
     
     local Shadow = Instance.new("ImageLabel", Main)
     Shadow.Name = "Shadow"

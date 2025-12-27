@@ -506,7 +506,7 @@ end)
         local TabTitleBar = Instance.new("TextLabel", Content)
         TabTitleBar.Name = TabName .. "TitleBar"
         TabTitleBar.Size = UDim2.new(1, -175, 0, 35)
-        TabTitleBar.Position = UDim2.new(0, 155, 0, 5)
+        TabTitleBar.Position = UDim2.new(0, 155, 0, 10)
         TabTitleBar.BackgroundTransparency = 1  -- Tanpa background
         TabTitleBar.Text = TabName
         TabTitleBar.TextColor3 = Theme.Accent
@@ -519,7 +519,7 @@ end)
         local TabContent = Instance.new("ScrollingFrame", Content)
         TabContent.Name = TabName .. "Content"
         TabContent.Size = UDim2.new(1, -160, 1, -65)
-        TabContent.Position = UDim2.new(0, 150, 0, 35)
+        TabContent.Position = UDim2.new(0, 150, 0, 45)
         TabContent.BackgroundColor3 = Theme.Background
         TabContent.BackgroundTransparency = 1
         TabContent.BorderSizePixel = 0

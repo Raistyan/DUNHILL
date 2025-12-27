@@ -1087,12 +1087,12 @@ end)
                 local Flag = config.Flag
                 local Callback = config.Callback or function() end
                 
-                -- Main Frame (Button Dropdown)
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
                 Frame.BackgroundTransparency = 0.4
                 Frame.BorderSizePixel = 0
+                Frame.ClipsDescendants = true
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
                 local Stroke = Instance.new("UIStroke", Frame)
@@ -1102,7 +1102,7 @@ end)
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 local Btn = Instance.new("TextButton", Frame)
-                Btn.Size = UDim2.new(1, 0, 1, 0)
+                Btn.Size = UDim2.new(1, 0, 0, 38)
                 Btn.BackgroundTransparency = 1
                 Btn.Text = ""
                 
@@ -1125,149 +1125,69 @@ end)
                 Arrow.TextSize = 10
                 Arrow.Font = Enum.Font.Gotham
                 
-                -- ✅ POPUP BACKGROUND (Parent ke ScreenGui, BUKAN ke Frame!)
-                local PopupBg = Instance.new("Frame", ScreenGui)
-                PopupBg.Name = "DropdownPopup"
-                PopupBg.Size = UDim2.new(1, 0, 1, 0)
-                PopupBg.Position = UDim2.new(0, 0, 0, 0)
-                PopupBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-                PopupBg.BackgroundTransparency = 0.7
-                PopupBg.BorderSizePixel = 0
-                PopupBg.Visible = false
-                PopupBg.ZIndex = 100
+                local OptionsFrame = Instance.new("Frame", Frame)
+                OptionsFrame.Size = UDim2.new(1, 0, 0, 0)
+                OptionsFrame.Position = UDim2.new(0, 0, 0, 38)
+                OptionsFrame.BackgroundTransparency = 1
                 
-                -- ✅ POPUP FRAME (Kotak di tengah layar)
-                local PopupFrame = Instance.new("Frame", PopupBg)
-                PopupFrame.Size = UDim2.new(0, 300, 0, 350)
-                PopupFrame.Position = UDim2.new(0.5, -150, 0.5, -175)
-                PopupFrame.BackgroundColor3 = Theme.BackgroundSecondary
-                PopupFrame.BorderSizePixel = 0
-                PopupFrame.ZIndex = 101
-                Instance.new("UICorner", PopupFrame).CornerRadius = UDim.new(0, 10)
+                local OptionsLayout = Instance.new("UIListLayout", OptionsFrame)
+                OptionsLayout.Padding = UDim.new(0, 3)
                 
-                local PopupStroke = Instance.new("UIStroke", PopupFrame)
-                PopupStroke.Color = Theme.BorderBlue
-                PopupStroke.Thickness = 2
-                PopupStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                local Opened = false
                 
-                -- ✅ TITLE POPUP
-                local PopupTitle = Instance.new("TextLabel", PopupFrame)
-                PopupTitle.Size = UDim2.new(1, -20, 0, 40)
-                PopupTitle.Position = UDim2.new(0, 10, 0, 5)
-                PopupTitle.BackgroundTransparency = 1
-                PopupTitle.Text = Name
-                PopupTitle.TextColor3 = Theme.Accent
-                PopupTitle.TextSize = 16
-                PopupTitle.Font = Enum.Font.GothamBold
-                PopupTitle.TextXAlignment = Enum.TextXAlignment.Left
-                PopupTitle.ZIndex = 102
-                
-                -- ✅ CLOSE BUTTON
-                local CloseBtn = Instance.new("TextButton", PopupFrame)
-                CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-                CloseBtn.Position = UDim2.new(1, -35, 0, 8)
-                CloseBtn.BackgroundColor3 = Theme.ElementBg
-                CloseBtn.Text = "✕"
-                CloseBtn.TextColor3 = Theme.Error
-                CloseBtn.TextSize = 16
-                CloseBtn.Font = Enum.Font.GothamBold
-                CloseBtn.BorderSizePixel = 0
-                CloseBtn.ZIndex = 103
-                Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
-                
-                -- ✅ SCROLLING FRAME
-                local ScrollFrame = Instance.new("ScrollingFrame", PopupFrame)
-                ScrollFrame.Size = UDim2.new(1, -20, 1, -55)
-                ScrollFrame.Position = UDim2.new(0, 10, 0, 45)
-                ScrollFrame.BackgroundColor3 = Theme.Background
-                ScrollFrame.BackgroundTransparency = 0.5
-                ScrollFrame.BorderSizePixel = 0
-                ScrollFrame.ScrollBarThickness = 4
-                ScrollFrame.ScrollBarImageColor3 = Theme.Primary
-                ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-                ScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-                ScrollFrame.ZIndex = 102
-                Instance.new("UICorner", ScrollFrame).CornerRadius = UDim.new(0, 8)
-                
-                local OptionsLayout = Instance.new("UIListLayout", ScrollFrame)
-                OptionsLayout.Padding = UDim.new(0, 5)
-                OptionsLayout.SortOrder = Enum.SortOrder.LayoutOrder
-                
-                local ScrollPadding = Instance.new("UIPadding", ScrollFrame)
-                ScrollPadding.PaddingTop = UDim.new(0, 8)
-                ScrollPadding.PaddingBottom = UDim.new(0, 8)
-                ScrollPadding.PaddingLeft = UDim.new(0, 8)
-                ScrollPadding.PaddingRight = UDim.new(0, 8)
-                
-                -- ✅ CREATE OPTIONS
-                local function CreateOptions()
-                    for _, child in ipairs(ScrollFrame:GetChildren()) do
-                        if child:IsA("TextButton") then
-                            child:Destroy()
-                        end
-                    end
-                    
-                    for i, option in ipairs(Options) do
-                        local OptBtn = Instance.new("TextButton", ScrollFrame)
-                        OptBtn.Name = "Option_" .. i
-                        OptBtn.Size = UDim2.new(1, 0, 0, 35)
-                        OptBtn.BackgroundColor3 = Theme.ElementBg
-                        OptBtn.Text = option
-                        OptBtn.TextColor3 = Theme.Text
-                        OptBtn.TextSize = 13
-                        OptBtn.Font = Enum.Font.Gotham
-                        OptBtn.AutoButtonColor = false
-                        OptBtn.BorderSizePixel = 0
-                        OptBtn.ZIndex = 103
-                        Instance.new("UICorner", OptBtn).CornerRadius = UDim.new(0, 6)
-                        
-                        local OptStroke = Instance.new("UIStroke", OptBtn)
-                        OptStroke.Color = Theme.ElementBorder
-                        OptStroke.Thickness = 1
-                        OptStroke.Transparency = 0.5
-                        OptStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                        
-                        OptBtn.MouseEnter:Connect(function()
-                            Tween(OptBtn, {BackgroundColor3 = Theme.ElementBgHover})
-                            Tween(OptStroke, {Color = Theme.Primary})
-                        end)
-                        
-                        OptBtn.MouseLeave:Connect(function()
-                            Tween(OptBtn, {BackgroundColor3 = Theme.ElementBg})
-                            Tween(OptStroke, {Color = Theme.ElementBorder})
-                        end)
-                        
-                        OptBtn.MouseButton1Click:Connect(function()
-                            CurrentOption = option
-                            NameLabel.Text = option
-                            PopupBg.Visible = false
-                            
-                            if Flag then
-                                Dunhill.Flags[Flag] = {CurrentValue = option}
-                            end
-                            pcall(Callback, option)
-                            SaveConfig()
-                        end)
+                local function UpdateSize()
+                    if Opened then
+                        Tween(Frame, {Size = UDim2.new(1, 0, 0, 38 + (#Options * 28) + ((#Options - 1) * 3))})
+                        Tween(Arrow, {Rotation = 180})
+                    else
+                        Tween(Frame, {Size = UDim2.new(1, 0, 0, 38)})
+                        Tween(Arrow, {Rotation = 0})
                     end
                 end
                 
-                CreateOptions()
+                for _, option in ipairs(Options) do
+                    local OptBtn = Instance.new("TextButton", OptionsFrame)
+                    OptBtn.Size = UDim2.new(1, -10, 0, 25)
+                    OptBtn.BackgroundColor3 = Theme.SliderBg
+                    OptBtn.Text = option
+                    OptBtn.TextColor3 = Theme.Text
+                    OptBtn.TextSize = 12
+                    OptBtn.Font = Enum.Font.Gotham
+                    OptBtn.AutoButtonColor = false
+                    OptBtn.BorderSizePixel = 0
+                    Instance.new("UICorner", OptBtn).CornerRadius = UDim.new(0, 5)
+                    
+                    OptBtn.MouseEnter:Connect(function()
+                        Tween(OptBtn, {BackgroundColor3 = Theme.ElementBgHover})
+                    end)
+                    
+                    OptBtn.MouseLeave:Connect(function()
+                        Tween(OptBtn, {BackgroundColor3 = Theme.SliderBg})
+                    end)
+                    
+                    OptBtn.MouseButton1Click:Connect(function()
+                        CurrentOption = option
+                        NameLabel.Text = option
+                        Opened = false
+                        UpdateSize()
+                        
+                        -- ✅ TAMBAHKAN: Auto scroll setelah pilih
+                        task.spawn(function()
+                            task.wait(0.15)
+                            local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
+                            TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
+                        end)
+                        
+                        if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
+                        pcall(Callback, option)
+                        SaveConfig()
+                    end)
+                end
                 
-                -- ✅ OPEN POPUP
                 Btn.MouseButton1Click:Connect(function()
-                    PopupBg.Visible = true
+                    Opened = not Opened
+                    UpdateSize()
                 end)
-                
-                -- ✅ CLOSE EVENTS
-                CloseBtn.MouseButton1Click:Connect(function()
-                    PopupBg.Visible = false
-                end)
-                
-                PopupBg.MouseButton1Click:Connect(function()
-                    PopupBg.Visible = false
-                end)
-                
-                PopupFrame.MouseButton1Click:Connect(function() end)
                 
                 if Flag then
                     Dunhill.Flags[Flag] = {CurrentValue = CurrentOption}
@@ -1285,7 +1205,42 @@ end)
                     end,
                     Refresh = function(_, newOptions)
                         Options = newOptions
-                        CreateOptions()
+                        for _, child in ipairs(OptionsFrame:GetChildren()) do
+                            if child:IsA("TextButton") then
+                                child:Destroy()
+                            end
+                        end
+                        for _, option in ipairs(Options) do
+                            local OptBtn = Instance.new("TextButton", OptionsFrame)
+                            OptBtn.Size = UDim2.new(1, -10, 0, 25)
+                            OptBtn.BackgroundColor3 = Theme.SliderBg
+                            OptBtn.Text = option
+                            OptBtn.TextColor3 = Theme.Text
+                            OptBtn.TextSize = 12
+                            OptBtn.Font = Enum.Font.Gotham
+                            OptBtn.AutoButtonColor = false
+                            OptBtn.BorderSizePixel = 0
+                            Instance.new("UICorner", OptBtn).CornerRadius = UDim.new(0, 5)
+                            OptBtn.MouseEnter:Connect(function() Tween(OptBtn, {BackgroundColor3 = Theme.ElementBgHover}) end)
+                            OptBtn.MouseLeave:Connect(function() Tween(OptBtn, {BackgroundColor3 = Theme.SliderBg}) end)
+                            OptBtn.MouseButton1Click:Connect(function()
+                                CurrentOption = option
+                                NameLabel.Text = option
+                                Opened = false
+                                UpdateSize()
+                                
+                                -- ✅ TAMBAHKAN INI JUGA
+                                task.spawn(function()
+                                    task.wait(0.15)
+                                    local targetY = Frame.AbsolutePosition.Y - TabContent.AbsolutePosition.Y - 20
+                                    TabContent.CanvasPosition = Vector2.new(0, math.max(0, targetY))
+                                end)
+                                
+                                if Flag then Dunhill.Flags[Flag] = {CurrentValue = option} end
+                                pcall(Callback, option)
+                                SaveConfig()
+                            end)
+                        end
                     end
                 }
             end

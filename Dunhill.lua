@@ -506,7 +506,7 @@ end)
         local TabTitleBar = Instance.new("TextLabel", Content)
         TabTitleBar.Name = TabName .. "TitleBar"
         TabTitleBar.Size = UDim2.new(1, -175, 0, 35)
-        TabTitleBar.Position = UDim2.new(0, 155, 0, 10)
+        TabTitleBar.Position = UDim2.new(0, 155, 0, 5)
         TabTitleBar.BackgroundTransparency = 1  -- Tanpa background
         TabTitleBar.Text = TabName
         TabTitleBar.TextColor3 = Theme.Accent

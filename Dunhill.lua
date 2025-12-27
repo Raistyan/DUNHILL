@@ -272,8 +272,8 @@ end
     
     local Content = Instance.new("Frame", Main)
     Content.Name = "Content"
-    Content.Size = UDim2.new(1, 0, 1, -45)
-    Content.Position = UDim2.new(0, 0, 0, 45)
+    Content.Size = UDim2.new(1, 0, 1, -50)
+    Content.Position = UDim2.new(0, 0, 0, 50)
     Content.BackgroundTransparency = 1
     
     local Sidebar = Instance.new("ScrollingFrame", Content)

@@ -518,7 +518,7 @@ end)
         
         local TabContent = Instance.new("ScrollingFrame", Content)
         TabContent.Name = TabName .. "Content"
-        TabContent.Size = UDim2.new(1, -160, 1, -45)
+        TabContent.Size = UDim2.new(1, -160, 1, -40)
         TabContent.Position = UDim2.new(0, 150, 0, 40)
         TabContent.BackgroundColor3 = Theme.Background
         TabContent.BackgroundTransparency = 1

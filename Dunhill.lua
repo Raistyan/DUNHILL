@@ -200,7 +200,7 @@ end
     local TopBar = Instance.new("Frame", Main)
     TopBar.Name = "TopBar"
     TopBar.Size = UDim2.new(1, 0, 0, 45)
-    TopBarExtend.BackgroundColor3 = Theme.TopBar
+    TopBar.BackgroundColor3 = Theme.TopBar
     TopBar.BackgroundTransparency = 0.5
     TopBar.BorderSizePixel = 0
     

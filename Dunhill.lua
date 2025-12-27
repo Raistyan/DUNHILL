@@ -50,6 +50,9 @@ local Theme = {
     ElementBg = Color3.fromRGB(25, 25, 25),
     ElementBgHover = Color3.fromRGB(30, 30, 30),
     ElementBorder = Color3.fromRGB(45, 45, 45),
+
+    ElementContentBg = Color3.fromRGB(65, 70, 80),  -- Abu-abu untuk element
+    ElementContentHover = Color3.fromRGB(75, 80, 90),
     
     TabActive = Color3.fromRGB(60, 60, 60),
     TabInactive = Color3.fromRGB(25, 25, 25),
@@ -197,7 +200,7 @@ end
     local TopBar = Instance.new("Frame", Main)
     TopBar.Name = "TopBar"
     TopBar.Size = UDim2.new(1, 0, 0, 45)
-    TopBar.BackgroundColor3 = Theme.TopBar
+    TopBar.BackgroundColor3 = Theme.Background
     TopBar.BackgroundTransparency = 0.15
     TopBar.BorderSizePixel = 0
     
@@ -207,7 +210,7 @@ end
     local TopBarExtend = Instance.new("Frame", TopBar)
     TopBarExtend.Size = UDim2.new(1, 0, 0, 10)
     TopBarExtend.Position = UDim2.new(0, 0, 1, -10)
-    TopBarExtend.BackgroundColor3 = Theme.TopBar
+    TopBarExtend.BackgroundColor3 = Theme.Background 
     TopBarExtend.BackgroundTransparency = 0.15
     TopBarExtend.BorderSizePixel = 0
     
@@ -287,7 +290,7 @@ end
     Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 8)
     
     local SidebarLayout = Instance.new("UIListLayout", Sidebar)
-    SidebarLayout.Padding = UDim.new(0, 6)
+    SidebarLayout.Padding = UDim.new(0, 5)
     SidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
     local SidebarPadding = Instance.new("UIPadding", Sidebar)
@@ -499,11 +502,24 @@ end)
         Label.TextSize = 13
         Label.Font = Enum.Font.GothamMedium
         Label.TextXAlignment = Enum.TextXAlignment.Left
+
+        local TabTitleBar = Instance.new("TextLabel", Content)
+        TabTitleBar.Name = TabName .. "TitleBar"
+        TabTitleBar.Size = UDim2.new(1, -175, 0, 35)
+        TabTitleBar.Position = UDim2.new(0, 155, 0, 15)
+        TabTitleBar.BackgroundTransparency = 1  -- Tanpa background
+        TabTitleBar.Text = TabName
+        TabTitleBar.TextColor3 = Theme.Accent
+        TabTitleBar.TextSize = 18
+        TabTitleBar.Font = Enum.Font.GothamBold
+        TabTitleBar.TextXAlignment = Enum.TextXAlignment.Left
+        TabTitleBar.Visible = false
+        TabTitleBar.ZIndex = 2
         
         local TabContent = Instance.new("ScrollingFrame", Content)
         TabContent.Name = TabName .. "Content"
-        TabContent.Size = UDim2.new(1, -160, 1, -15)
-        TabContent.Position = UDim2.new(0, 150, 0, 10)
+        TabContent.Size = UDim2.new(1, -160, 1, -65)
+        TabContent.Position = UDim2.new(0, 150, 0, 60)
         TabContent.BackgroundColor3 = Theme.Background
         TabContent.BackgroundTransparency = 1
         TabContent.BorderSizePixel = 0
@@ -515,7 +531,7 @@ end)
         TabContent.ClipsDescendants = true
         
         local Layout = Instance.new("UIListLayout", TabContent)
-        Layout.Padding = UDim.new(0, 10)
+        Layout.Padding = UDim.new(0, 6)
         Layout.SortOrder = Enum.SortOrder.LayoutOrder
         
         local Padding = Instance.new("UIPadding", TabContent)
@@ -539,10 +555,10 @@ end)
             local function ActivateTab()
                 for _, tab in pairs(Window.Tabs) do
                     tab.Content.Visible = false
+                    tab.TitleBar.Visible = false  -- ✅ TAMBAHKAN
                     Tween(tab.Button, {BackgroundColor3 = Theme.TabInactive})
                     Tween(tab.Label, {TextColor3 = Theme.TextDim})
                     
-                    -- ✅ TAMBAHKAN INI
                     if tab.Icon and tab.Icon.Visible then
                         Tween(tab.Icon, {ImageColor3 = Theme.TextDim})
                     end
@@ -554,10 +570,10 @@ end)
                 
                 Window.CurrentTab = TabContent
                 TabContent.Visible = true
+                TabTitleBar.Visible = true  -- ✅ TAMBAHKAN
                 Tween(TabBtn, {BackgroundColor3 = Theme.TabActive})
                 Tween(Label, {TextColor3 = Theme.Text})
                 
-                -- ✅ TAMBAHKAN INI
                 if Icon and Icon.Visible then
                     Tween(Icon, {ImageColor3 = Theme.Text})
                 end
@@ -584,61 +600,74 @@ end)
             end)
         end
         
-        local Tab = {
-            Button = TabBtn, 
-            Content = TabContent,
-            Icon = Icon,
-            Label = Label
-        }
+            local Tab = {
+                Button = TabBtn, 
+                Content = TabContent,
+                TitleBar = TabTitleBar,  -- ✅ TAMBAHKAN
+                Icon = Icon,
+                Label = Label
+            }
         table.insert(Window.Tabs, Tab)
         
-        function Tab:CreateSection(config)
-            config = config or {}
-            local SectionName = config.Name or "Section"
-            
-            local Section = Instance.new("Frame", TabContent)
-            Section.Name = SectionName
-            Section.Size = UDim2.new(1, 0, 0, 0)
-            Section.AutomaticSize = Enum.AutomaticSize.Y
-            Section.BackgroundColor3 = Theme.BackgroundSecondary
-            Section.BackgroundTransparency = 0.5
-            Section.BorderSizePixel = 0
-            Instance.new("UICorner", Section).CornerRadius = UDim.new(0, 8)
-            
-            local SectionStroke = Instance.new("UIStroke", Section)
-            SectionStroke.Color = Theme.ElementBorder
-            SectionStroke.Thickness = 1
-            SectionStroke.Transparency = 0.4
-            SectionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-            
-            local SectionPadding = Instance.new("UIPadding", Section)
-            SectionPadding.PaddingTop = UDim.new(0, 12)
-            SectionPadding.PaddingBottom = UDim.new(0, 12)
-            SectionPadding.PaddingLeft = UDim.new(0, 12)
-            SectionPadding.PaddingRight = UDim.new(0, 12)
-            
-            local SectionTitle = Instance.new("TextLabel", Section)
-            SectionTitle.Name = "Title"
-            SectionTitle.Size = UDim2.new(1, 0, 0, 22)
-            SectionTitle.BackgroundTransparency = 1
-            SectionTitle.Text = "▸ " .. SectionName
-            SectionTitle.TextColor3 = Theme.Accent
-            SectionTitle.TextSize = 14
-            SectionTitle.Font = Enum.Font.GothamBold
-            SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
-            
-            local Container = Instance.new("Frame", Section)
-            Container.Name = "Container"
-            Container.Size = UDim2.new(1, 0, 0, 0)
-            Container.Position = UDim2.new(0, 0, 0, 28)
-            Container.AutomaticSize = Enum.AutomaticSize.Y
-            Container.BackgroundTransparency = 1
-            
-            local ContainerLayout = Instance.new("UIListLayout", Container)
-            ContainerLayout.Padding = UDim.new(0, 8)
-            ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
-            
-            local SectionObj = {Container = Container, Frame = Section}
+            function Tab:CreateSection(config)
+                config = config or {}
+                local SectionName = config.Name or "Section"
+                
+                -- ✅ FRAME HANYA UNTUK JUDUL
+                local SectionHeader = Instance.new("Frame", TabContent)
+                SectionHeader.Name = SectionName .. "_Header"
+                SectionHeader.Size = UDim2.new(1, 0, 0, 30)
+                SectionHeader.BackgroundColor3 = Theme.ElementContentBg
+                SectionHeader.BackgroundTransparency = 0.7
+                SectionHeader.BorderSizePixel = 0
+                Instance.new("UICorner", SectionHeader).CornerRadius = UDim.new(0, 8)
+                
+                local SectionStroke = Instance.new("UIStroke", SectionHeader)
+                SectionStroke.Color = Theme.ElementBorder
+                SectionStroke.Thickness = 1
+                SectionStroke.Transparency = 0.4
+                SectionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                -- ✅ TAMBAHKAN INI: GARIS CAHAYA BIRU DI BAWAH
+                local GlowLine = Instance.new("Frame", SectionHeader)
+                GlowLine.Name = "GlowLine"
+                GlowLine.Size = UDim2.new(1, -10, 0, 2)  -- Lebar penuh, tinggi 2px
+                GlowLine.Position = UDim2.new(0, 5, 1, 0)  -- Di bawah header
+                GlowLine.BackgroundColor3 = Theme.BorderBlue  -- Warna biru (sesuai border utama)
+                GlowLine.BackgroundTransparency = 0  -- Full solid
+                GlowLine.BorderSizePixel = 0
+
+                -- ✅ GLOW EFFECT (shadow biru)
+                local GlowShadow = Instance.new("UIGradient", GlowLine)
+                GlowShadow.Transparency = NumberSequence.new({
+                    NumberSequenceKeypoint.new(0, 0.3),   -- Kiri: agak terang
+                    NumberSequenceKeypoint.new(0.5, 0),   -- Tengah: full terang
+                    NumberSequenceKeypoint.new(1, 0.3)    -- Kanan: agak terang
+                })
+                GlowShadow.Rotation = 0
+                
+                local SectionTitle = Instance.new("TextLabel", SectionHeader)
+                SectionTitle.Name = "Title"
+                SectionTitle.Size = UDim2.new(1, -20, 1, 0)
+                SectionTitle.Position = UDim2.new(0, 12, 0, 0)
+                SectionTitle.BackgroundTransparency = 1
+                SectionTitle.Text = SectionName
+                SectionTitle.TextColor3 = Theme.Accent
+                SectionTitle.TextSize = 14
+                SectionTitle.Font = Enum.Font.GothamBold
+                SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
+                
+                -- ✅ CONTAINER LANGSUNG DI TabContent (BUKAN DALAM FRAME)
+                local Container = Instance.new("Frame", TabContent)
+                Container.Name = SectionName .. "_Content"
+                Container.Size = UDim2.new(1, 0, 0, 0)
+                Container.AutomaticSize = Enum.AutomaticSize.Y
+                Container.BackgroundTransparency = 1
+                
+                local ContainerLayout = Instance.new("UIListLayout", Container)
+                ContainerLayout.Padding = UDim.new(0, 4)
+                ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                
+                local SectionObj = {Container = Container, Frame = SectionHeader}
             
             function SectionObj:CreateLabel(config)
                 config = config or {}
@@ -667,8 +696,8 @@ end)
                 
                 local Btn = Instance.new("TextButton", Container)
                 Btn.Size = UDim2.new(1, 0, 0, 38)
-                Btn.BackgroundColor3 = Theme.ElementBg
-                Btn.BackgroundTransparency = 0.3
+                Btn.BackgroundColor3 = Theme.ElementContentBg
+                Btn.BackgroundTransparency = 0.7
                 Btn.Text = Name
                 Btn.TextColor3 = Theme.Text
                 Btn.TextSize = 14
@@ -684,12 +713,12 @@ end)
                 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 
                 Btn.MouseEnter:Connect(function()
-                    Tween(Btn, {BackgroundColor3 = Theme.ElementBgHover})
+                    Tween(Btn, {BackgroundColor3 = Theme.ElementContentHover})
                     Tween(Stroke, {Color = Theme.Primary})
                 end)
                 
                 Btn.MouseLeave:Connect(function()
-                    Tween(Btn, {BackgroundColor3 = Theme.ElementBg})
+                    Tween(Btn, {BackgroundColor3 = Theme.ElementContentBg})
                     Tween(Stroke, {Color = Theme.ElementBorder})
                 end)
                 
@@ -716,8 +745,8 @@ end)
                 
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.4
+                Frame.BackgroundColor3 = Theme.ElementContentBg
+                Frame.BackgroundTransparency = 0.7
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
@@ -757,11 +786,11 @@ end)
                 Interact.Text = ""
                 
                 Interact.MouseEnter:Connect(function()
-                    Tween(Frame, {BackgroundColor3 = Theme.ElementBgHover})
+                    Tween(Frame, {BackgroundColor3 = Theme.ElementContentHover})
                 end)
                 
                 Interact.MouseLeave:Connect(function()
-                    Tween(Frame, {BackgroundColor3 = Theme.ElementBg})
+                    Tween(Frame, {BackgroundColor3 = Theme.ElementContentBg})
                 end)
                 
                 local function SetValue(value)
@@ -805,8 +834,8 @@ end)
                 
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 54)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.4
+                Frame.BackgroundColor3 = Theme.ElementContentBg
+                Frame.BackgroundTransparency = 0.7
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
@@ -944,8 +973,8 @@ end)
                 local success, Frame = pcall(function()
                     local frame = Instance.new("Frame")
                     frame.Size = UDim2.new(1, 0, 0, 40)
-                    frame.BackgroundColor3 = Theme.ElementBg
-                    frame.BackgroundTransparency = 0.3
+                    frame.BackgroundColor3 = Theme.ElementContentBg
+                    frame.BackgroundTransparency = 0.7
                     frame.BorderSizePixel = 0
                     frame.Parent = Container
                     return frame
@@ -1089,8 +1118,8 @@ end)
                 
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
-                Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.4
+                Frame.BackgroundColor3 = Theme.ElementContentBg
+                Frame.BackgroundTransparency = 0.7
                 Frame.BorderSizePixel = 0
                 Frame.ClipsDescendants = true
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
@@ -1255,8 +1284,8 @@ function SectionObj:CreateCollapsible(config)
     
     local CollapsibleFrame = Instance.new("Frame", Container)
     CollapsibleFrame.Size = UDim2.new(1, 0, 0, 38)
-    CollapsibleFrame.BackgroundColor3 = Theme.ElementBg
-    CollapsibleFrame.BackgroundTransparency = 0.4
+    CollapsibleFrame.BackgroundColor3 = Theme.ElementContentBg
+    CollapsibleFrame.BackgroundTransparency = 0.7
     CollapsibleFrame.BorderSizePixel = 0
     CollapsibleFrame.ClipsDescendants = true
     Instance.new("UICorner", CollapsibleFrame).CornerRadius = UDim.new(0, 7)
@@ -1323,11 +1352,11 @@ function SectionObj:CreateCollapsible(config)
     end)
     
     HeaderBtn.MouseEnter:Connect(function()
-        Tween(CollapsibleFrame, {BackgroundColor3 = Theme.ElementBgHover})
+        Tween(CollapsibleFrame, {BackgroundColor3 = Theme.ElementContentHover})
     end)
     
     HeaderBtn.MouseLeave:Connect(function()
-        Tween(CollapsibleFrame, {BackgroundColor3 = Theme.ElementBg})
+        Tween(CollapsibleFrame, {BackgroundColor3 = Theme.ElementContentBg})
     end)
     
     -- Initialize
@@ -1368,7 +1397,7 @@ function SectionObj:CreateCollapsible(config)
         
         local Frame = Instance.new("Frame", ContentContainer)
         Frame.Size = UDim2.new(1, 0, 0, 38)
-        Frame.BackgroundColor3 = Theme.ElementBg
+        Frame.BackgroundColor3 = Theme.ElementContentBg  
         Frame.BackgroundTransparency = 0.4
         Frame.BorderSizePixel = 0
         Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
@@ -1409,11 +1438,11 @@ function SectionObj:CreateCollapsible(config)
         Interact.Text = ""
         
         Interact.MouseEnter:Connect(function()
-            Tween(Frame, {BackgroundColor3 = Theme.ElementBgHover})
+            Tween(Frame, {BackgroundColor3 = Theme.ElementContentHover})
         end)
         
         Interact.MouseLeave:Connect(function()
-            Tween(Frame, {BackgroundColor3 = Theme.ElementBg})
+            Tween(Frame, {BackgroundColor3 = Theme.ElementContentBg})
         end)
         
         local function SetValue(value)
@@ -1452,8 +1481,8 @@ function SectionObj:CreateCollapsible(config)
         
         local Frame = Instance.new("Frame", ContentContainer)
         Frame.Size = UDim2.new(1, 0, 0, 65)
-        Frame.BackgroundColor3 = Theme.ElementBg
-        Frame.BackgroundTransparency = 0.4
+        Frame.BackgroundColor3 = Theme.ElementContentBg
+        Frame.BackgroundTransparency = 0.7
         Frame.BorderSizePixel = 0
         Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
         
@@ -1552,7 +1581,7 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.4
+                Frame.BackgroundTransparency = 0.7
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 
@@ -1638,7 +1667,7 @@ end
                 local Frame = Instance.new("Frame", Container)
                 Frame.Size = UDim2.new(1, 0, 0, 38)
                 Frame.BackgroundColor3 = Theme.ElementBg
-                Frame.BackgroundTransparency = 0.4
+                Frame.BackgroundTransparency = 0.7
                 Frame.BorderSizePixel = 0
                 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 7)
                 

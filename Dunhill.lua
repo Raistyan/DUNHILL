@@ -199,7 +199,7 @@ end
     
     local TopBar = Instance.new("Frame", Main)
     TopBar.Name = "TopBar"
-    TopBar.Size = UDim2.new(1, 0, 0, 45)
+    TopBar.Size = UDim2.new(1, 0, 0, 40)
     TopBar.BackgroundColor3 = Theme.Background
     TopBar.BackgroundTransparency = 0.7
     TopBar.BorderSizePixel = 0
@@ -273,7 +273,7 @@ end
     local Content = Instance.new("Frame", Main)
     Content.Name = "Content"
     Content.Size = UDim2.new(1, 0, 1, -45)
-    Content.Position = UDim2.new(0, 0, 0, 45)
+    Content.Position = UDim2.new(0, 0, 0, 40)
     Content.BackgroundTransparency = 1
     
     local Sidebar = Instance.new("ScrollingFrame", Content)

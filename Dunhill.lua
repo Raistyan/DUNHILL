@@ -201,7 +201,7 @@ end
     TopBar.Name = "TopBar"
     TopBar.Size = UDim2.new(1, 0, 0, 45)
     TopBar.BackgroundColor3 = Theme.Background
-    TopBar.BackgroundTransparency = 0.5
+    TopBar.BackgroundTransparency = 0.6
     TopBar.BorderSizePixel = 0
     
     local TopBarCorner = Instance.new("UICorner", TopBar)
@@ -211,7 +211,7 @@ end
     TopBarExtend.Size = UDim2.new(1, 0, 0, 10)
     TopBarExtend.Position = UDim2.new(0, 0, 1, -10)
     TopBarExtend.BackgroundColor3 = Theme.Background  
-    TopBarExtend.BackgroundTransparency = 0.5
+    TopBarExtend.BackgroundTransparency = 0.6
     TopBarExtend.BorderSizePixel = 0
     
     local Title = Instance.new("ImageLabel", TopBar)

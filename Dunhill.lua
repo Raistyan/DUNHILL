@@ -232,17 +232,15 @@ end
     TitleText.Font = Enum.Font.GothamBold
     TitleText.TextXAlignment = Enum.TextXAlignment.Left
     
-    local CloseBtn = Instance.new("TextButton", TopBar)
+    local CloseBtn = Instance.new("ImageButton", TopBar)
     CloseBtn.Size = UDim2.new(0, 35, 0, 35)
     CloseBtn.Position = UDim2.new(1, -40, 0.5, -17.5)
     CloseBtn.BackgroundColor3 = Theme.ElementBg
-    CloseBtn.Text = "✕"
-    CloseBtn.TextColor3 = Theme.Error
-    CloseBtn.TextSize = 18
-    CloseBtn.Font = Enum.Font.GothamBold
+    CloseBtn.Image = "rbxassetid://97946818577230"
+    CloseBtn.ScaleType = Enum.ScaleType.Fit
     CloseBtn.AutoButtonColor = false
     CloseBtn.BorderSizePixel = 0
-    Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 8)  -- ✅ TAMBAHKAN INI
     
     local MinBtn = Instance.new("TextButton", TopBar)
     MinBtn.Size = UDim2.new(0, 35, 0, 35)
@@ -299,14 +297,84 @@ end
     
     MakeDraggable(Main, TopBar)
     
-    CloseBtn.MouseEnter:Connect(function() Tween(CloseBtn, {BackgroundColor3 = Theme.Error}) end)
-    CloseBtn.MouseLeave:Connect(function() Tween(CloseBtn, {BackgroundColor3 = Theme.ElementBg}) end)
+    CloseBtn.MouseEnter:Connect(function() 
+        Tween(CloseBtn, {BackgroundColor3 = Theme.Error})
+    end)
+
+    CloseBtn.MouseLeave:Connect(function() 
+        Tween(CloseBtn, {BackgroundColor3 = Theme.ElementBg})
+    end)
     CloseBtn.MouseButton1Click:Connect(function()
         Tween(Main, {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
         wait(0.35)
         ScreenGui:Destroy()
     end)
-    
+            -- ✅ RESIZE HANDLE (setelah MakeDraggable)
+        local ResizeHandle = Instance.new("TextButton", Main)
+        ResizeHandle.Size = UDim2.new(0, 20, 0, 20)
+        ResizeHandle.Position = UDim2.new(1, -20, 1, -20)
+        ResizeHandle.BackgroundColor3 = Theme.BorderBlue
+        ResizeHandle.BackgroundTransparency = 0.3
+        ResizeHandle.Text = ""
+        ResizeHandle.AutoButtonColor = false
+        ResizeHandle.BorderSizePixel = 0
+        ResizeHandle.ZIndex = 10
+        Instance.new("UICorner", ResizeHandle).CornerRadius = UDim.new(0, 4)
+
+        -- Icon garis resize (opsional, bisa dihapus jika mau polos)
+        local ResizeIcon = Instance.new("TextLabel", ResizeHandle)
+        ResizeIcon.Size = UDim2.new(1, 0, 1, 0)
+        ResizeIcon.BackgroundTransparency = 1
+        ResizeIcon.Text = "⋰"
+        ResizeIcon.TextColor3 = Theme.Text
+        ResizeIcon.TextSize = 16
+        ResizeIcon.Font = Enum.Font.GothamBold
+        ResizeIcon.Rotation = 90
+
+        -- ✅ RESIZE LOGIC
+        local resizing = false
+        local resizeStart = nil
+        local startSize = nil
+        local minSize = Vector2.new(400, 250)  -- Minimum: 400x250
+        local maxSize = Vector2.new(1000, 700)   -- Ukuran maksimum
+
+        ResizeHandle.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                resizing = true
+                resizeStart = input.Position
+                startSize = Main.AbsoluteSize
+            end
+        end)
+
+        ResizeHandle.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                resizing = false
+                -- Update OriginalSize agar minimize/maximize tetap pakai size baru
+                OriginalSize = Main.Size
+            end
+        end)
+
+        UserInputService.InputChanged:Connect(function(input)
+            if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                local delta = input.Position - resizeStart
+                local newWidth = math.clamp(startSize.X + delta.X, minSize.X, maxSize.X)
+                local newHeight = math.clamp(startSize.Y + delta.Y, minSize.Y, maxSize.Y)
+                
+                Main.Size = UDim2.new(0, newWidth, 0, newHeight)
+            end
+        end)
+
+        -- Hover effect untuk resize handle
+        ResizeHandle.MouseEnter:Connect(function()
+            Tween(ResizeHandle, {BackgroundTransparency = 0})
+        end)
+
+        ResizeHandle.MouseLeave:Connect(function()
+            if not resizing then
+                Tween(ResizeHandle, {BackgroundTransparency = 0.3})
+            end
+        end)
+
     MinBtn.MouseEnter:Connect(function() Tween(MinBtn, {BackgroundColor3 = Theme.ElementBgHover}) end)
     MinBtn.MouseLeave:Connect(function() Tween(MinBtn, {BackgroundColor3 = Theme.ElementBg}) end)
 -- ✅ FIX: Simpan ukuran dan posisi asli

@@ -1360,33 +1360,28 @@ end)
                             SaveConfig()
                         end)
                         
-                        -- ✅ TOUCH SUPPORT untuk mobile
-                        OptBtn.TouchTap:Connect(function()
-                            CurrentOption = option
-                            NameLabel.Text = option
-                            Opened = false
-                            UpdateSize()
-                            
-                            if Flag then 
-                                Dunhill.Flags[Flag] = {CurrentValue = option} 
-                            end
-                            pcall(Callback, option)
-                            SaveConfig()
-                        end)
+                -- ✅ TOUCH & CLICK SUPPORT
+                OptBtn.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        CurrentOption = option
+                        NameLabel.Text = option
+                        Opened = false
+                        UpdateSize()
+                        
+                        if Flag then 
+                            Dunhill.Flags[Flag] = {CurrentValue = option} 
+                        end
+                        pcall(Callback, option)
+                        SaveConfig()
                     end
-                end
+                end)
                 
                 CreateOptions()  -- Initialize options
                 
                 -- ✅ BUTTON CLICK (PC & Mobile) - INSTANT RESPONSE
-                Btn.MouseButton1Click:Connect(function()
-                    Opened = not Opened
-                    UpdateSize()
-                end)
-
-                -- ✅ TOUCH SUPPORT untuk Mobile (Instant, tanpa long press)
+                -- ✅ BUTTON CLICK (PC & Mobile)
                 Btn.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.Touch then
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                         Opened = not Opened
                         UpdateSize()
                     end

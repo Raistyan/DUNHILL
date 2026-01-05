@@ -1328,9 +1328,24 @@ end)
                             Tween(OptBtn, {BackgroundColor3 = Color3.fromRGB(18, 18, 18)}, 0.15)
                         end)
                         
-                        -- ✅ INPUT SUPPORT (PC & Mobile)
-                        OptBtn.InputBegan:Connect(function(input)
-                            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    -- ✅ FIXED: Bedain scroll dan tap
+                    local touchStart = nil
+                    local isTouching = false
+
+                    OptBtn.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                            touchStart = input.Position
+                            isTouching = true
+                        end
+                    end)
+
+                    OptBtn.InputEnded:Connect(function(input)
+                        if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and isTouching then
+                            local touchEnd = input.Position
+                            local distance = (touchEnd - touchStart).Magnitude
+                            
+                            -- Kalau gerak kurang dari 10 pixel = tap, bukan scroll
+                            if distance < 10 then
                                 CurrentOption = option
                                 NameLabel.Text = option
                                 Opened = false
@@ -1342,9 +1357,13 @@ end)
                                 pcall(Callback, option)
                                 SaveConfig()
                             end
-                        end)
-                    end
+                            
+                            isTouching = false
+                            touchStart = nil
+                        end
+                    end)
                 end
+            end
                 
                 CreateOptions()
                 

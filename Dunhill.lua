@@ -1367,13 +1367,37 @@ end)
                 
                 CreateOptions()
                 
-                -- ✅ BUTTON CLICK (PC & Mobile)
-                Btn.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        Opened = not Opened
-                        UpdateSize()
+            -- ✅ BUTTON CLICK dengan deteksi scroll yang lebih ketat
+            local btnTouchStart = nil
+            local btnTouchStartTime = nil
+
+            Btn.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    btnTouchStart = input.Position
+                    btnTouchStartTime = tick()
+                end
+            end)
+
+            Btn.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if btnTouchStart then
+                        local touchEnd = input.Position
+                        local distance = (touchEnd - btnTouchStart).Magnitude
+                        local touchDuration = tick() - btnTouchStartTime
+                        
+                        -- Hanya buka dropdown jika:
+                        -- 1. Gerak kurang dari 10 pixel (bukan scroll)
+                        -- 2. Touch duration kurang dari 0.3 detik (tap cepat)
+                        if distance < 10 and touchDuration < 0.3 then
+                            Opened = not Opened
+                            UpdateSize()
+                        end
+                        
+                        btnTouchStart = nil
+                        btnTouchStartTime = nil
                     end
-                end)
+                end
+            end)
                 
                 -- ✅ CLOSE DETECTION dengan delay
                 local closeConnection

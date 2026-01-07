@@ -227,7 +227,7 @@ end
     TitleText.Position = UDim2.new(0, 60, 0, 0)  -- Di sebelah kanan logo
     TitleText.BackgroundTransparency = 1
     TitleText.Text = WindowName
-    TitleText.TextColor3 = Theme.Accent
+    TitleText.TextColor3 = Theme.BorderBlue
     TitleText.TextSize = 17
     TitleText.Font = Enum.Font.GothamBold
     TitleText.TextXAlignment = Enum.TextXAlignment.Left
@@ -568,7 +568,7 @@ end)
         Label.Text = TabName
         Label.TextColor3 = Theme.TextDim
         Label.TextSize = 13
-        Label.Font = Enum.Font.GothamMedium
+        Label.Font = Enum.Font.GothamBold
         Label.TextXAlignment = Enum.TextXAlignment.Left
 
         local TabTitleBar = Instance.new("TextLabel", Content)
@@ -831,7 +831,7 @@ end)
                 NameLabel.Text = Name
                 NameLabel.TextColor3 = Theme.Text
                 NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
+                NameLabel.Font = Enum.Font.GothamBold
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local ToggleBg = Instance.new("Frame", Frame)
@@ -920,7 +920,7 @@ end)
                 NameLabel.Text = Name
                 NameLabel.TextColor3 = Theme.Text
                 NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
+                NameLabel.Font = Enum.Font.GothamBold
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local ValueLabel = Instance.new("TextLabel", Frame)
@@ -1070,7 +1070,7 @@ end)
                 NameLabel.Text = Name
                 NameLabel.TextColor3 = Theme.Text
                 NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
+                NameLabel.Font = Enum.Font.GothamBold
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local InputBox = Instance.new("TextBox", Frame)
@@ -1211,7 +1211,7 @@ end)
                 NameLabel.Text = CurrentOption
                 NameLabel.TextColor3 = Theme.Text
                 NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
+                NameLabel.Font = Enum.Font.GothamBold
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local Arrow = Instance.new("TextLabel", Frame)
@@ -1579,7 +1579,7 @@ function SectionObj:CreateCollapsible(config)
         NameLabel.Text = Name
         NameLabel.TextColor3 = Theme.Text
         NameLabel.TextSize = 13
-        NameLabel.Font = Enum.Font.Gotham
+        NameLabel.Font = Enum.Font.GothamBold
         NameLabel.TextXAlignment = Enum.TextXAlignment.Left
         
         local ToggleBg = Instance.new("Frame", Frame)
@@ -1663,7 +1663,7 @@ function SectionObj:CreateCollapsible(config)
         NameLabel.Text = Name
         NameLabel.TextColor3 = Theme.Text
         NameLabel.TextSize = 13
-        NameLabel.Font = Enum.Font.Gotham
+        NameLabel.Font = Enum.Font.GothamBold
         NameLabel.TextXAlignment = Enum.TextXAlignment.Left
         
         local InputBox = Instance.new("TextBox", Frame)

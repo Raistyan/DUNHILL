@@ -218,7 +218,7 @@ end
     Title.Size = UDim2.new(0, 30, 0, 30)  -- Ukuran logo
     Title.Position = UDim2.new(0, 15, 0.5, -15)  -- Posisi kiri atas
     Title.BackgroundTransparency = 1
-    Title.Image = "rbxassetid://101311528770915"  -- Logo Mach kamu (sama kayak minimize icon)
+    Title.Image = "rbxassetid://131516954663626"  -- Logo Mach kamu (sama kayak minimize icon)
     Title.ScaleType = Enum.ScaleType.Fit
     Title.ImageTransparency = 0
 

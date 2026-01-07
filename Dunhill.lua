@@ -1762,7 +1762,7 @@ end
                 NameLabel.Text = Name
                 NameLabel.TextColor3 = Theme.Text
                 NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
+                NameLabel.Font = Enum.Font.GothamBold
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local KeyBtn = Instance.new("TextButton", Frame)
@@ -1848,7 +1848,7 @@ end
                 NameLabel.Text = Name
                 NameLabel.TextColor3 = Theme.Text
                 NameLabel.TextSize = 13
-                NameLabel.Font = Enum.Font.Gotham
+                NameLabel.Font = Enum.Font.GothamBold
                 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 
                 local ColorDisplay = Instance.new("TextButton", Frame)

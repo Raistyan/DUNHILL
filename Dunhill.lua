@@ -680,7 +680,7 @@ end)
         function Tab:CreateSection(config)
             config = config or {}
             local SectionName = config.Name or "Section"
-            local DefaultExpanded = config.DefaultExpanded ~= true  -- Default true
+            local DefaultExpanded = config.DefaultExpanded == true  -- Default true
             
             -- ✅ HEADER SECTION (FRAME KECIL, TIDAK MEMBUNGKUS ELEMENT)
             local SectionHeader = Instance.new("Frame", TabContent)

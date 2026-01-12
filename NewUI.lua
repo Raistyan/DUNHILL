@@ -482,7 +482,7 @@ function Mach:Window(GuiConfig)
 
     local GuiFunc = {}
 
-    local Machb = Instance.new("ScreenGui");
+    local Mach = Instance.new("ScreenGui");
     local DropShadowHolder = Instance.new("Frame");
     local DropShadow = Instance.new("ImageLabel");
     local Main = Instance.new("Frame");
@@ -505,10 +505,10 @@ function Mach:Window(GuiConfig)
     local LayersFolder = Instance.new("Folder");
     local LayersPageLayout = Instance.new("UIPageLayout");
 
-    Machb.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    Machb.Name = "Machb"
-    Machb.ResetOnSpawn = false
-    Machb.Parent = game:GetService("CoreGui")
+    Mach.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    Mach.Name = "Mach"
+    Mach.ResetOnSpawn = false
+    Mach.Parent = game:GetService("CoreGui")
 
     DropShadowHolder.BackgroundTransparency = 1
     DropShadowHolder.BorderSizePixel = 0
@@ -521,10 +521,10 @@ function Mach:Window(GuiConfig)
     end
     DropShadowHolder.ZIndex = 0
     DropShadowHolder.Name = "DropShadowHolder"
-    DropShadowHolder.Parent = Machb
+    DropShadowHolder.Parent = Mach
 
-    DropShadowHolder.Position = UDim2.new(0, (Machb.AbsoluteSize.X // 2 - DropShadowHolder.Size.X.Offset // 2), 0,
-        (Machb.AbsoluteSize.Y // 2 - DropShadowHolder.Size.Y.Offset // 2))
+    DropShadowHolder.Position = UDim2.new(0, (Mach.AbsoluteSize.X // 2 - DropShadowHolder.Size.X.Offset // 2), 0,
+        (Mach.AbsoluteSize.Y // 2 - DropShadowHolder.Size.Y.Offset // 2))
     DropShadow.Image = "rbxassetid://6015897843"
     DropShadow.ImageColor3 = Color3.fromRGB(15, 15, 15)
     DropShadow.ImageTransparency = 1
@@ -747,8 +747,8 @@ function Mach:Window(GuiConfig)
     ScrollTab.ChildRemoved:Connect(UpdateSize1)
 
     function GuiFunc:DestroyGui()
-        if CoreGui:FindFirstChild("Machb") then
-            Machb:Destroy()
+        if CoreGui:FindFirstChild("Mach") then
+            Mach:Destroy()
         end
     end
 
@@ -854,7 +854,7 @@ function Mach:Window(GuiConfig)
         Instance.new("UICorner", Cancel).CornerRadius = UDim.new(0, 6)
 
         Yes.MouseButton1Click:Connect(function()
-            if Machb then Machb:Destroy() end
+            if Mach then Mach:Destroy() end
             if game.CoreGui:FindFirstChild("ToggleUIButton") then
                 game.CoreGui.ToggleUIButton:Destroy()
             end

@@ -266,7 +266,7 @@ function Mach:MakeNotify(NotifyConfig)
     NotifyConfig.Title = NotifyConfig.Title or "Mach"
     NotifyConfig.Description = NotifyConfig.Description or "Notification"
     NotifyConfig.Content = NotifyConfig.Content or "Content"
-    NotifyConfig.Color = NotifyConfig.Color or Color3.fromRGB(255, 0, 255)
+    NotifyConfig.Color = NotifyConfig.Color or Color3.fromRGB(255, 50, 50)
     NotifyConfig.Time = NotifyConfig.Time or 0.5
     NotifyConfig.Delay = NotifyConfig.Delay or 5
     local NotifyFunction = {}

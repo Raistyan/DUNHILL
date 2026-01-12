@@ -464,7 +464,7 @@ function notif(msg, delay, color, title, desc)
         Title = title or "Mach",
         Description = desc or "Notification",
         Content = msg or "Content",
-        Color = color or Color3.fromRGB(232, 145, 234),
+        Color = color or Color3.fromRGB(255, 50, 50),
         Delay = delay or 4
     })
 end
@@ -473,7 +473,7 @@ function Mach:Window(GuiConfig)
     GuiConfig              = GuiConfig or {}
     GuiConfig.Title        = GuiConfig.Title or "Mach"
     GuiConfig.Footer       = GuiConfig.Footer or "Mach >:D"
-    GuiConfig.Color        = GuiConfig.Color or Color3.fromRGB(255, 0, 255)
+    GuiConfig.Color        = GuiConfig.Color or Color3.fromRGB(255, 50, 50)
     GuiConfig["Tab Width"] = GuiConfig["Tab Width"] or 120
     GuiConfig.Version      = GuiConfig.Version or 1
 
@@ -791,11 +791,11 @@ function Mach:Window(GuiConfig)
 
         local Gradient = Instance.new("UIGradient")
         Gradient.Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 191, 255)),
-            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 255, 255)),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 140, 255)),
-            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 255, 255)),
-            ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 191, 255))
+            ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 50, 50)),    -- Merah
+            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 255, 255)), -- Putih
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 30, 30)),    -- Merah gelap
+            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 255, 255)), -- Putih
+            ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 50, 50))     -- Merah
         })
         Gradient.Rotation = 90
         Gradient.Parent = DialogGlow
@@ -1025,7 +1025,7 @@ function Mach:Window(GuiConfig)
     UICorner36.CornerRadius = UDim.new(0, 3)
     UICorner36.Parent = DropdownSelect
 
-    UIStroke14.Color = Color3.fromRGB(12, 159, 255)
+    UIStroke14.Color = Color3.fromRGB(255, 50, 50)
     UIStroke14.Thickness = 2.5
     UIStroke14.Transparency = 0.8
     UIStroke14.Parent = DropdownSelect

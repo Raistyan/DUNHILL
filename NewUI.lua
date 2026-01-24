@@ -2287,6 +2287,7 @@ function Mach:Window(GuiConfig)
                 InputTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
                 InputTextBox.TextSize = 12
                 InputTextBox.TextXAlignment = Enum.TextXAlignment.Left
+                InputTextBox.ClearTextOnFocus = false  -- ← TAMBAHKAN BARIS INI
                 InputTextBox.AnchorPoint = Vector2.new(0, 0.5)
                 InputTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 InputTextBox.BackgroundTransparency = 0.9990000128746033

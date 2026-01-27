@@ -897,11 +897,6 @@ function Mach:Window(GuiConfig)
         UICorner.CornerRadius = UDim.new(0, 6)
         UICorner.Parent = MainButton
 
-        local UIStroke = Instance.new("UIStroke")
-        UIStroke.Color = Color3.fromRGB(255, 50, 50)  -- Merah
-        UIStroke.Thickness = 2  -- Ketebalan garis (pixel)
-        UIStroke.Transparency = 0  -- 0 = solid, 0.5 = semi transparan
-        UIStroke.Parent = MainButton
 
         local Button = Instance.new("TextButton")
         Button.Parent = MainButton

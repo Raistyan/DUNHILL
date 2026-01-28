@@ -2691,7 +2691,7 @@ function Mach:Window(GuiConfig)
                 Label.BackgroundTransparency = 1
                 Label.Font = Enum.Font.GothamBold
                 Label.Text = "── [ " .. title .. " ] ──"
-                Label.TextColor3 = Color3.fromRGB(230, 230, 230)
+                Label.TextColor3 = GuiConfig.Color
                 Label.TextSize = 12
                 Label.TextXAlignment = Enum.TextXAlignment.Left
 

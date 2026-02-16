@@ -551,8 +551,8 @@ function Mach:Window(GuiConfig)
         Main.BackgroundTransparency = 1
         Main.ImageTransparency = GuiConfig.ThemeTransparency or 0.15
     else
-        Main.BackgroundColor3 = Color3.fromRGB(20, 12, 28) -- Latar Warna Window
-        Main.BackgroundTransparency = 0.2
+        Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Latar Warna Window
+        Main.BackgroundTransparency = 0.3
     end
 
     Main.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1036,7 +1036,7 @@ function Mach:Window(GuiConfig)
     UIStroke14.Parent = DropdownSelect
 
     DropdownSelectReal.AnchorPoint = Vector2.new(0.5, 0.5)
-    DropdownSelectReal.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Latar Warna Dropdown
+    DropdownSelectReal.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Latar Warna Dropdown
     DropdownSelectReal.BackgroundTransparency = 0.7
     DropdownSelectReal.BorderColor3 = Color3.fromRGB(0, 0, 0)
     DropdownSelectReal.BorderSizePixel = 0

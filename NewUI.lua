@@ -551,7 +551,7 @@ function Mach:Window(GuiConfig)
         Main.BackgroundTransparency = 1
         Main.ImageTransparency = GuiConfig.ThemeTransparency or 0.15
     else
-        Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Latar Warna Window
+        Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0) --latar warna--
         Main.BackgroundTransparency = 0.3
     end
 

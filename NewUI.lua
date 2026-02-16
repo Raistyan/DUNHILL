@@ -552,7 +552,7 @@ function Mach:Window(GuiConfig)
         Main.ImageTransparency = GuiConfig.ThemeTransparency or 0.15
     else
         Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Latar Warna Window
-        Main.BackgroundTransparency = 0.1
+        Main.BackgroundTransparency = 0.2
     end
 
     Main.AnchorPoint = Vector2.new(0.5, 0.5)
